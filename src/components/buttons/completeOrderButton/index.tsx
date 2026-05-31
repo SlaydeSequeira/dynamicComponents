@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback } from "react";
 import type { CompleteOrderButtonProps, Phase } from "./interfaces";
 import { PHASES, ORDER, TIMINGS, shade, speedToMult } from "./utils";
+import { usePhaseAnimation } from "../../shared/usePhaseAnimation";
 import "./styles/index.css";
 
 export type { CompleteOrderButtonProps } from "./interfaces";
@@ -18,31 +18,15 @@ export default function CompleteOrderButton({
   onComplete,
   autoReset = true,
 }: CompleteOrderButtonProps) {
-  const [phase, setPhase] = useState<Phase>(PHASES.IDLE);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  const run = useCallback(() => {
-    if (phase !== PHASES.IDLE) return;
-    timers.current.forEach(clearTimeout);
-    timers.current = [];
-
-    const mult = speedToMult(speed);
-    let elapsed = 0;
-    ORDER.forEach((p) => {
-      timers.current.push(
-        setTimeout(() => {
-          setPhase(p);
-          if (p === PHASES.DONE && typeof onComplete === "function") onComplete();
-        }, elapsed)
-      );
-      elapsed += TIMINGS[p] * mult;
-    });
-    if (autoReset) {
-      timers.current.push(setTimeout(() => setPhase(PHASES.IDLE), elapsed));
-    }
-  }, [phase, speed, onComplete, autoReset]);
-
-  const animating = phase !== PHASES.IDLE && phase !== PHASES.DONE;
+  const { phase, run, animating } = usePhaseAnimation<Phase>({
+    order: ORDER,
+    timings: TIMINGS,
+    idle: PHASES.IDLE as Phase,
+    done: PHASES.DONE as Phase,
+    speed,
+    autoReset,
+    onDone: onComplete,
+  });
   const sceneActive = ([PHASES.REVEAL, PHASES.DRIVE_IN, PHASES.OPEN, PHASES.LOAD, PHASES.CLOSE, PHASES.LEAVE] as Phase[]).includes(phase);
   const showTruck = ([PHASES.DRIVE_IN, PHASES.OPEN, PHASES.LOAD, PHASES.CLOSE, PHASES.LEAVE] as Phase[]).includes(phase);
   const doorsOpen = phase === PHASES.OPEN || phase === PHASES.LOAD;

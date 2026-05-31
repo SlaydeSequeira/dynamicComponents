@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback } from "react";
 import type { PaperAirplaneSendProps, Phase } from "./interfaces";
 import { PHASES, ORDER, TIMINGS, speedToMult } from "./utils";
+import { usePhaseAnimation } from "../../shared/usePhaseAnimation";
 import "./styles/index.css";
 
 export type { PaperAirplaneSendProps } from "./interfaces";
@@ -15,31 +15,16 @@ export default function PaperAirplaneSend({
   autoReset = true,
   disabled = false,
 }: PaperAirplaneSendProps) {
-  const [phase, setPhase] = useState<Phase>(PHASES.IDLE);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  const run = useCallback(() => {
-    if (phase !== PHASES.IDLE || disabled) return;
-    timers.current.forEach(clearTimeout);
-    timers.current = [];
-
-    const mult = speedToMult(speed);
-    let elapsed = 0;
-    ORDER.forEach((p) => {
-      timers.current.push(
-        setTimeout(() => {
-          setPhase(p);
-          if (p === PHASES.DONE && typeof onSend === "function") onSend();
-        }, elapsed)
-      );
-      elapsed += TIMINGS[p] * mult;
-    });
-    if (autoReset) {
-      timers.current.push(setTimeout(() => setPhase(PHASES.IDLE), elapsed));
-    }
-  }, [phase, speed, onSend, autoReset, disabled]);
-
-  const animating = phase !== PHASES.IDLE && phase !== PHASES.DONE;
+  const { phase, run, animating } = usePhaseAnimation<Phase>({
+    order: ORDER,
+    timings: TIMINGS,
+    idle: PHASES.IDLE as Phase,
+    done: PHASES.DONE as Phase,
+    speed,
+    autoReset,
+    onDone: onSend,
+    disabled,
+  });
   const showPlane = phase === PHASES.FOLD || phase === PHASES.FLY;
   const planeFlying = phase === PHASES.FLY;
 
