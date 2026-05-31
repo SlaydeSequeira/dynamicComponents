@@ -1,0 +1,39 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #eee;
+  -webkit-font-smoothing: antialiased;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #ccc;
+}
+
+code {
+  background: #1a1a2e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #7cb3f5;
+}
+
+a {
+  color: #7cb3f5;
+}

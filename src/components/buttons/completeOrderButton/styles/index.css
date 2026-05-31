@@ -1,0 +1,315 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&display=swap');
+
+.cob-btn {
+  --dark: #2b2f3a;
+  --dark-2: #232733;
+  --white-hi: #ffffff;
+  --white: #f5f7fc;
+  --white-2: #dfe4ef;
+  --blue: #2f57e6;
+  --blue-2: #3a64f2;
+  --accent: #ffc24b;
+  --kraft: #e0ad58;
+  --kraft-2: #c68f3c;
+  --d-reveal: .6s;
+  --d-drive: .95s;
+  --d-door: .5s;
+  --d-load: .8s;
+  --d-leave: .9s;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  position: relative;
+  width: 360px; height: 100px;
+  border: none; border-radius: 999px;
+  background: var(--dark);
+  cursor: pointer; overflow: hidden; outline: none;
+  box-shadow: 0 14px 34px -12px rgba(43,47,58,0.6),
+              inset 0 1px 0 rgba(255,255,255,0.06);
+  transition: transform .18s ease, background .3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.cob-btn:not(:disabled):hover { transform: translateY(-2px); }
+.cob-btn:not(:disabled):active { transform: translateY(1px) scale(.99); }
+.cob-btn:disabled { cursor: default; }
+
+/* Labels */
+.cob-label, .cob-done {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: 1.18rem; font-weight: 700; letter-spacing: .2px;
+  opacity: 0; transition: opacity .3s ease, transform .3s ease;
+  pointer-events: none;
+}
+.cob-label { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.25); }
+.cob-label.show { opacity: 1; }
+.cob-done { transform: scale(.85); color: #58d499; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.cob-done.show { opacity: 1; transform: scale(1); }
+.cob-check { width: 22px; height: 22px; }
+
+/* Road markings */
+.cob-road {
+  position: absolute; left: 30px; right: 30px; bottom: 24px; height: 2px; z-index: 5;
+  border-radius: 2px; opacity: .65;
+  background: repeating-linear-gradient(to right,
+    rgba(255,255,255,.55) 0 12px, transparent 12px 24px);
+}
+
+/* ---------- Day scene backdrop ---------- */
+.cob-sky {
+  position: absolute; inset: 0; z-index: 0; overflow: hidden; border-radius: inherit;
+  background: linear-gradient(180deg, #74c0ef 0%, #a6dcf3 52%, #d4eefb 100%);
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path var(--d-reveal) cubic-bezier(.4,0,.2,1);
+}
+.cob-btn.active .cob-sky { clip-path: inset(0 0 0 0); }
+
+.cob-sun {
+  position: absolute; top: 13px; left: 28px; width: 24px; height: 24px; z-index: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, #fff7c8, #ffe070 72%);
+  box-shadow: 0 0 16px 5px rgba(255,224,112,.55);
+}
+
+/* stars (night only) */
+.cob-stars {
+  position: absolute; inset: 0; z-index: 1; opacity: 0; pointer-events: none;
+  transition: opacity .4s ease;
+}
+.cob-stars::before {
+  content: ""; position: absolute; top: 10px; left: 0;
+  width: 2px; height: 2px; border-radius: 50%; background: #fff;
+  box-shadow:
+    66px 8px 0 0 rgba(255,255,255,.9),  98px 18px 0 -.5px rgba(255,255,255,.7),
+    134px 6px 0 0 rgba(255,255,255,.85), 176px 16px 0 -.5px rgba(255,255,255,.6),
+    150px 30px 0 0 rgba(255,255,255,.55),212px 10px 0 0 rgba(255,255,255,.8),
+    250px 22px 0 -.5px rgba(255,255,255,.65),288px 7px 0 0 rgba(255,255,255,.8),
+    320px 20px 0 0 rgba(255,255,255,.7), 110px 28px 0 0 rgba(255,255,255,.5);
+}
+
+.cob-cloud {
+  position: absolute; z-index: 1; width: 36px; height: 12px;
+  background: #fff; border-radius: 999px;
+  box-shadow: 0 2px 5px rgba(70,110,150,.14);
+}
+.cob-cloud::before, .cob-cloud::after {
+  content: ""; position: absolute; background: #fff; border-radius: 50%;
+}
+.cob-cloud::before { width: 16px; height: 16px; left: 4px; top: -8px; }
+.cob-cloud::after  { width: 22px; height: 22px; right: 4px; top: -13px; }
+.cob-cloud.c1 { top: 16px; left: 116px; }
+.cob-cloud.c2 { top: 29px; left: 248px; transform: scale(.78); opacity: .92; }
+
+.cob-hills { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+
+.cob-tree { position: absolute; z-index: 3; bottom: 34px; width: 28px; height: 44px; }
+.cob-tree .trunk {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 6px; height: 18px;
+  background: linear-gradient(90deg, #6a4524 0%, #8c5f37 48%, #5e3e22 100%);
+  border-radius: 2px 2px 1px 1px;
+}
+.cob-tree .canopy {
+  position: absolute; bottom: 13px; left: 50%; transform: translateX(-50%);
+  width: 28px; height: 30px; border-radius: 50% 50% 46% 46%;
+  background: radial-gradient(circle at 38% 30%, #84d071, #4f9e4d 78%);
+  box-shadow: 0 2px 5px rgba(0,0,0,.15);
+}
+.cob-tree .canopy::before {
+  content: ""; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+  width: 17px; height: 17px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #8fd87c, #5aa850);
+}
+.cob-tree.t1 { left: 20px; }
+.cob-tree.t2 { left: 312px; }
+.cob-tree.t3 { left: 274px; bottom: 32px; transform: scale(.82); }
+
+.cob-ground {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 36px; z-index: 4;
+  background: linear-gradient(180deg, #3a4150 0%, #2b2f3a 55%, #23262f 100%);
+}
+.cob-ground::before {
+  content: ""; position: absolute; top: -2px; left: 0; right: 0; height: 4px;
+  background: #6fb45a; border-radius: 2px 2px 0 0;
+}
+
+/* ---------- Night mode ---------- */
+.cob-night .cob-sky {
+  background: linear-gradient(180deg, #0e1838 0%, #1a2a55 55%, #314069 100%);
+}
+.cob-night .cob-sun {
+  background: radial-gradient(circle at 38% 36%, #fbf7e6, #dcd8c2 75%);
+  box-shadow: 0 0 14px 4px rgba(235,235,210,.4);
+}
+.cob-night .cob-sun::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 70% 62%, rgba(140,140,128,.28), transparent 46%);
+}
+.cob-night .cob-stars { opacity: 1; }
+.cob-night .cob-cloud,
+.cob-night .cob-cloud::before,
+.cob-night .cob-cloud::after { background: #9aa6c4; }
+.cob-night .cob-cloud { opacity: .32; box-shadow: none; }
+.cob-night .cob-hills { filter: brightness(.5) saturate(.85); }
+.cob-night .cob-ground::before { background: #2c5233; }
+.cob-night .cob-road { opacity: .4; }
+
+/* ---------- Truck ---------- */
+.cob-truck {
+  position: absolute; left: 50%; bottom: 20px; z-index: 3;
+  width: 126px; height: 56px;
+  transform: translateX(230px);
+  transition: none;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.cob-truck.in {
+  transform: translateX(-30px);
+  transition: transform var(--d-drive) cubic-bezier(.4,.04,.3,1);
+}
+.cob-truck.leave {
+  transform: translateX(360px);
+  transition: transform var(--d-leave) cubic-bezier(.55,0,.85,.45);
+}
+
+.cob-shadow {
+  position: absolute; left: 10px; right: 6px; bottom: -3px; height: 9px;
+  background: radial-gradient(50% 100% at 50% 0%, rgba(0,0,0,.28), transparent 70%);
+  filter: blur(1px);
+}
+
+/* exhaust */
+.cob-pipe {
+  position: absolute; left: -3px; bottom: 4px; width: 8px; height: 4px;
+  background: #2b2f3a; border-radius: 2px; z-index: 2;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.3);
+}
+.cob-smoke { position: absolute; left: -8px; bottom: 5px; opacity: 0; z-index: 1; }
+.cob-truck.smoking .cob-smoke { opacity: 1; }
+.cob-smoke i {
+  position: absolute; bottom: 0; left: 0;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(232,236,243,.7); opacity: 0;
+}
+.cob-truck.smoking .cob-smoke i { animation: smoke 1.2s ease-out infinite; }
+.cob-truck.smoking .cob-smoke i:nth-child(2) { animation-delay: .35s; }
+.cob-truck.smoking .cob-smoke i:nth-child(3) { animation-delay: .7s; }
+@keyframes smoke {
+  0%   { opacity: .55; transform: translate(0, 0) scale(.4); }
+  100% { opacity: 0;  transform: translate(-15px, -11px) scale(1.5); }
+}
+
+/* cargo */
+.cob-cargo { position: absolute; left: 0; bottom: 12px; width: 82px; height: 40px; }
+
+.cob-hold {
+  position: absolute; left: 0; bottom: 0; width: 22px; height: 40px; z-index: 1;
+  background: linear-gradient(90deg, #15171f 0%, #262b36 100%);
+  border-radius: 5px 0 0 5px;
+  box-shadow: inset 6px 0 8px -4px rgba(0,0,0,.6);
+}
+
+/* ---------- Package ---------- */
+.cob-package {
+  position: absolute; left: -40px; bottom: 2px;
+  width: 30px; height: 27px; z-index: 3;
+  background: linear-gradient(160deg, var(--kraft) 0%, var(--kraft-2) 100%);
+  border-radius: 4px;
+  box-shadow: 0 4px 9px -3px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.25);
+  opacity: 0; transform: translateX(0) translateY(6px) scale(.7);
+  transition: opacity .3s ease, transform .45s cubic-bezier(.34,1.56,.64,1);
+}
+.cob-package.show { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
+.cob-package.loading {
+  opacity: 1;
+  transform: translateX(84px) translateY(0) scale(1);
+  transition: transform var(--d-load) cubic-bezier(.45,.02,.5,1);
+}
+.cob-package.gone { opacity: 0; transition: none; }
+
+.cob-tape-h, .cob-tape-v { position: absolute; background: rgba(255,255,255,.5); }
+.cob-tape-h { left: 0; right: 0; top: 52%; height: 3px; transform: translateY(-50%); }
+.cob-tape-v { top: 0; bottom: 0; left: 50%; width: 3px; transform: translateX(-50%); }
+.cob-flap { position: absolute; top: 0; left: 0; right: 0; height: 7px;
+  background: rgba(0,0,0,.1); border-radius: 4px 4px 0 0; }
+
+/* white side body */
+.cob-body {
+  position: absolute; left: 16px; bottom: 0; width: 66px; height: 40px; z-index: 5;
+  background: linear-gradient(180deg, var(--white-hi) 0%, var(--white) 55%, var(--white-2) 100%);
+  border-radius: 3px 4px 4px 3px;
+  box-shadow: inset 0 -7px 10px -7px rgba(0,0,0,.22),
+              inset 0 2px 0 rgba(255,255,255,.9);
+}
+.cob-stripe { position: absolute; left: 0; right: 0; top: 22px; height: 6px;
+  background: linear-gradient(90deg, var(--blue), var(--blue-2)); opacity: .9; }
+.cob-seam { position: absolute; left: 0; top: 4px; bottom: 4px; width: 2px;
+  background: rgba(0,0,0,.12); }
+.cob-logo { position: absolute; left: 12px; top: 7px; width: 13px; height: 13px;
+  border: 2px solid var(--blue); border-radius: 3px; }
+.cob-logo::after { content: ""; position: absolute; left: 1px; right: 1px; top: 4px;
+  height: 2px; background: var(--blue); }
+
+/* roll-up rear door */
+.cob-door {
+  position: absolute; left: 0; bottom: 0; width: 18px; height: 40px; z-index: 6;
+  transform-origin: top center;
+  background: repeating-linear-gradient(180deg, #eef1f7 0 3px, #d3d9e6 3px 6px);
+  border-radius: 5px 2px 2px 5px;
+  border-right: 1px solid #c2c9d8;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.4);
+  transition: transform var(--d-door) cubic-bezier(.5,.02,.3,1);
+}
+.cob-door.open { transform: scaleY(.12); }
+.cob-handle { position: absolute; left: 4px; right: 4px; bottom: 7px; height: 3px;
+  background: #9aa3b5; border-radius: 2px; }
+
+/* cab */
+.cob-cab {
+  position: absolute; left: 80px; bottom: 12px; width: 44px; height: 40px; z-index: 4;
+  background: linear-gradient(180deg, var(--blue-2) 0%, var(--blue) 100%);
+  border-radius: 4px 12px 12px 4px;
+  box-shadow: inset -4px 0 7px -4px rgba(0,0,0,.35),
+              inset 0 2px 0 rgba(255,255,255,.2);
+}
+.cob-window { position: absolute; top: 6px; right: 7px; width: 20px; height: 15px;
+  background: linear-gradient(135deg, #d6e4ff 0%, #9cbcff 100%);
+  border-radius: 3px 6px 3px 3px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+.cob-grille { position: absolute; right: 4px; bottom: 9px; width: 4px; height: 12px;
+  background: rgba(0,0,0,.25); border-radius: 2px; }
+.cob-headlight { position: absolute; right: 1px; bottom: 8px; width: 5px; height: 6px;
+  background: #d8c59a; border-radius: 2px;
+  box-shadow: 0 0 2px 0 rgba(255,210,90,.3);
+  transition: background .2s ease, box-shadow .2s ease; }
+.cob-truck.lights .cob-headlight {
+  background: #fff6d0;
+  box-shadow: 0 0 10px 3px rgba(255,210,90,.95), 0 0 4px 1px #fff; }
+.cob-mirror { position: absolute; left: -4px; top: 12px; width: 5px; height: 4px;
+  background: var(--blue); border-radius: 2px; }
+
+/* headlight beam */
+.cob-beam {
+  position: absolute; right: -34px; bottom: 8px; width: 40px; height: 30px;
+  background: linear-gradient(to right, rgba(255,224,130,.6), rgba(255,224,130,0));
+  clip-path: polygon(0% 38%, 0% 62%, 100% 100%, 100% 0%);
+  opacity: 0; transform: scaleX(.4); transform-origin: left center;
+  transition: opacity .25s ease, transform .3s ease; z-index: 0;
+}
+.cob-truck.lights .cob-beam { opacity: 1; transform: scaleX(1); }
+
+.cob-bumper { position: absolute; right: 0; bottom: 8px; width: 5px; height: 8px;
+  background: #1b1e27; border-radius: 2px; z-index: 4; }
+
+/* wheels + fenders */
+.cob-fender { position: absolute; bottom: 6px; width: 24px; height: 14px;
+  background: var(--dark); border-radius: 12px 12px 0 0; z-index: 7; }
+.cob-fender.f1 { left: 18px; }
+.cob-fender.f2 { left: 90px; }
+.cob-wheel { position: absolute; bottom: 0; width: 19px; height: 19px; z-index: 8;
+  background: #15171f; border-radius: 50%;
+  box-shadow: inset 0 0 0 4px #3f4453, 0 2px 3px rgba(0,0,0,.4); }
+.cob-wheel i { position: absolute; inset: 6px; background: #aeb6c6; border-radius: 50%; }
+.cob-wheel.w1 { left: 20px; }
+.cob-wheel.w2 { left: 92px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cob-sky, .cob-truck, .cob-door, .cob-package { transition-duration: .01ms; }
+}
