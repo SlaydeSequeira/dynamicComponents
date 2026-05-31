@@ -1,0 +1,185 @@
+.spb-wrap {
+  position: relative;
+  width: 100%;
+  height: var(--spb-char-size, 32px);
+}
+
+/* ---------- Track ---------- */
+.spb-track {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: var(--spb-height, 6px);
+  background: var(--spb-track-color, #1a1a2e);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.spb-fill {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  border-radius: 999px;
+  background: var(--spb-progress-color, #7cb3f5);
+  transition: width .15s linear;
+}
+
+/* ---------- Trail effects ---------- */
+.spb-fill.trail-snail {
+  background: linear-gradient(
+    90deg,
+    var(--spb-progress-color, #7cb3f5) 60%,
+    rgba(144, 238, 144, 0.6)
+  );
+}
+.spb-fill.trail-snail::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.25) 0%, transparent 100%);
+  border-radius: inherit;
+}
+.spb-fill.trail-rocket {
+  background: linear-gradient(
+    90deg,
+    var(--spb-progress-color, #7cb3f5) 40%,
+    #f59e0b 80%,
+    #ef4444
+  );
+}
+.spb-fill.trail-train::after {
+  content: "";
+  position: absolute; right: 0; top: -4px;
+  width: 12px; height: 4px;
+  background: rgba(200,200,200,.4);
+  border-radius: 4px;
+  animation: spb-smoke-puff 0.8s ease-out infinite;
+}
+
+@keyframes spb-smoke-puff {
+  0%   { opacity: .5; transform: translateY(0) scale(.6); }
+  100% { opacity: 0;  transform: translateY(-8px) scale(1.3); }
+}
+
+/* ---------- Character container ---------- */
+.spb-character {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--spb-char-size, 32px);
+  height: var(--spb-char-size, 32px);
+  transition: left .15s linear;
+  z-index: 1;
+  color: var(--spb-char-color, var(--spb-progress-color, #7cb3f5));
+}
+.spb-character svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---------- Character animations ---------- */
+.spb-anim-bob {
+  animation: spb-bob .5s ease-in-out infinite;
+}
+.spb-anim-crawl {
+  animation: spb-crawl 2s ease-in-out infinite;
+}
+.spb-anim-bounce {
+  animation: spb-bounce .6s ease-in-out infinite;
+}
+.spb-anim-wobble {
+  animation: spb-wobble .4s ease-in-out infinite;
+}
+.spb-anim-undulate {
+  animation: spb-undulate 1.2s ease-in-out infinite;
+}
+
+@keyframes spb-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+@keyframes spb-crawl {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-1px); }
+}
+@keyframes spb-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-1.5px); }
+}
+@keyframes spb-wobble {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  25%      { transform: translateY(-1px) rotate(1deg); }
+  75%      { transform: translateY(-1px) rotate(-1deg); }
+}
+@keyframes spb-undulate {
+  0%, 100% { transform: translateY(0) scaleX(1); }
+  25%      { transform: translateY(-1px) scaleX(1.03); }
+  75%      { transform: translateY(-1px) scaleX(.97); }
+}
+
+/* Rocket flame */
+.spb-flame {
+  animation: spb-flicker .3s ease-in-out infinite alternate;
+}
+@keyframes spb-flicker {
+  0%   { transform: scaleX(1); opacity: .9; }
+  100% { transform: scaleX(.65); opacity: .6; }
+}
+
+/* Runner legs */
+.spb-leg-back {
+  animation: spb-stride-back .4s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+.spb-leg-front {
+  animation: spb-stride-front .4s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+@keyframes spb-stride-back {
+  0%   { transform: rotate(-25deg); }
+  100% { transform: rotate(25deg); }
+}
+@keyframes spb-stride-front {
+  0%   { transform: rotate(25deg); }
+  100% { transform: rotate(-25deg); }
+}
+
+/* Runner arms */
+.spb-arm-back {
+  animation: spb-arm-b .4s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+.spb-arm-front {
+  animation: spb-arm-f .4s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+@keyframes spb-arm-b {
+  0%   { transform: rotate(20deg); }
+  100% { transform: rotate(-20deg); }
+}
+@keyframes spb-arm-f {
+  0%   { transform: rotate(-20deg); }
+  100% { transform: rotate(20deg); }
+}
+
+/* ---------- Percentage text ---------- */
+.spb-pct {
+  position: absolute;
+  right: 0;
+  top: -8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--spb-progress-color, #7cb3f5);
+  font-family: system-ui, sans-serif;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spb-character, .spb-fill { transition-duration: .01ms !important; }
+  .spb-anim-bob, .spb-anim-crawl, .spb-anim-bounce,
+  .spb-anim-wobble, .spb-anim-undulate,
+  .spb-flame,
+  .spb-leg-back, .spb-leg-front,
+  .spb-arm-back, .spb-arm-front {
+    animation-duration: .01ms !important;
+  }
+}

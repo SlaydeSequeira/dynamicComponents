@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&display=swap');
+
+.pas-shell {
+  --pas-bg: #2563eb;
+  --pas-plane-color: #ffffff;
+  --pas-d-fold: .45s;
+  --pas-d-fly: .55s;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  position: relative;
+  width: 260px;
+  height: 64px;
+  border-radius: 999px;
+  background: var(--pas-bg);
+  overflow: hidden;
+  box-shadow: 0 10px 28px -8px rgba(37, 99, 235, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pas-hit {
+  position: absolute; inset: 0; z-index: 10;
+  border: none; background: transparent; cursor: pointer;
+  border-radius: inherit; outline: none;
+}
+.pas-hit:disabled { cursor: default; }
+
+/* hover glow */
+.pas-hit:not(:disabled):hover ~ .pas-glow {
+  opacity: 1;
+}
+.pas-glow {
+  position: absolute; inset: 0; z-index: 1;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 70%);
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;
+}
+
+/* ---------- Labels ---------- */
+.pas-label, .pas-done {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: 1.1rem; font-weight: 600; letter-spacing: .2px;
+  opacity: 0; transition: opacity .3s ease, transform .3s ease;
+  pointer-events: none;
+}
+.pas-label {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.pas-label.show { opacity: 1; }
+
+.pas-done {
+  color: #6ee7a8;
+  text-shadow: 0 1px 2px rgba(0,0,0,.25);
+  transform: scale(.85);
+}
+.pas-done.show { opacity: 1; transform: scale(1); }
+
+.pas-send-icon { width: 20px; height: 20px; }
+.pas-check { width: 22px; height: 22px; }
+
+/* ---------- Paper Airplane ---------- */
+.pas-plane {
+  position: absolute; inset: 0; z-index: 6;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.pas-plane svg {
+  width: 38px; height: 38px;
+  opacity: 0;
+  transform: scale(.3) rotate(-60deg);
+  transition: transform var(--pas-d-fold) cubic-bezier(.34,1.56,.64,1),
+              opacity calc(var(--pas-d-fold) * 0.6) ease;
+}
+.pas-plane.show svg {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+.pas-plane.fly svg {
+  opacity: 0;
+  transform: translateX(180px) translateY(-28px) rotate(25deg) scale(.5);
+  transition: transform var(--pas-d-fly) cubic-bezier(.55,0,.85,.35),
+              opacity calc(var(--pas-d-fly) * 0.7) ease-in;
+}
+
+/* ---------- Trail particles ---------- */
+.pas-trail {
+  position: absolute; inset: 0; z-index: 4;
+  pointer-events: none;
+}
+.pas-trail i {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 8px; height: 2px;
+  border-radius: 1px;
+  background: rgba(255,255,255,.45);
+  opacity: 0;
+  transform: translate(0, -50%) rotate(-12deg);
+}
+.pas-trail.active i {
+  animation: pas-dot var(--pas-d-fly) ease-out forwards;
+}
+.pas-trail i:nth-child(1) { margin-top: -6px; animation-delay: 0s; }
+.pas-trail i:nth-child(2) { margin-top: -2px; animation-delay: .06s; }
+.pas-trail i:nth-child(3) { margin-top:  2px; animation-delay: .12s; }
+.pas-trail i:nth-child(4) { margin-top: -4px; animation-delay: .18s; }
+.pas-trail i:nth-child(5) { margin-top:  4px; animation-delay: .24s; }
+
+@keyframes pas-dot {
+  0%   { opacity: .65; transform: translate(10px, -50%) scaleX(.6); }
+  100% { opacity: 0;   transform: translate(-50px, calc(-50% + 8px)) scaleX(1.8); }
+}
+
+/* ---------- Flash ---------- */
+.pas-flash {
+  position: absolute; inset: 0; z-index: 3;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.18), transparent 60%);
+  opacity: 0; pointer-events: none;
+  transition: opacity .15s ease;
+}
+.pas-flash.show { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pas-plane svg, .pas-trail i { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}

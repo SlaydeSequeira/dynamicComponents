@@ -5,7 +5,7 @@ import { createUsageEntry } from "../shared/createUsageEntry";
 const playgroundConfig: PropConfig[] = [
   { propName: "size", type: "slider", min: 40, max: 200, default: 80, description: "Overall size in px" },
   { propName: "coreColor", type: "hex", default: "#7cb3f5", description: "Core dot color" },
-  { propName: "orbitals", type: "slider", min: 1, max: 5, default: 3, description: "Number of orbiting dots" },
+  { propName: "orbitals", type: "slider", min: 1, max: 8, default: 3, description: "Number of orbiting dots" },
   { propName: "speed", type: "slider", min: 1, max: 5, default: 2, description: "Seconds per revolution" },
 ];
 

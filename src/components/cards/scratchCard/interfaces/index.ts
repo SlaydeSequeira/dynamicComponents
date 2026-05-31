@@ -11,6 +11,4 @@ export interface ScratchCardProps {
   /** % scratched to auto-reveal (default 50) */
   revealAt?: number;
   onReveal?: () => void;
-  /** Show scratch percentage indicator (default false) */
-  showPercentage?: boolean;
 }

@@ -9,6 +9,9 @@ export default function CoffeeLoader({
   size = DEFAULT_SIZE,
   progress: controlledProgress,
   color = "#6f4e37",
+  showPercentage = false,
+  showPot = false,
+  fluid = false,
 }: CoffeeLoaderProps) {
   const [autoProgress, setAutoProgress] = useState(0);
   const progress = controlledProgress ?? autoProgress;
@@ -22,6 +25,14 @@ export default function CoffeeLoader({
   }, [controlledProgress]);
 
   const showSteam = progress > 50;
+
+  // Pot geometry
+  const potBodyPath = "M-5,-14 C-8,-10 -12,-3 -12,3 Q-11,11 -6,14 Q0,17 6,14 Q11,11 12,3 C12,-3 8,-10 5,-14 Z";
+  const potTransform = "translate(88,-30) rotate(-45) scale(2.5)";
+  const potLiquidY = -48 + (progress / 100) * 53;
+  const streamVisible = showPot && progress > 0 && progress < 97;
+  const streamWidth = 3 - (progress / 100) * 2.2;
+  const streamOpacity = 1 - (progress / 100) * 0.6;
 
   // Mug geometry (in a 100x100 viewBox)
   const mugTop = 28;
@@ -62,11 +73,14 @@ export default function CoffeeLoader({
   return (
     <div
       className="cf-container"
-      style={{ "--cf-size": `${size}px` } as React.CSSProperties}
+      style={{
+        "--cf-size": `${size}px`,
+        ...(showPot && { "--cf-height": `${Math.round(size * 1.36)}px` }),
+      } as React.CSSProperties}
       role="status"
       aria-label="Loading"
     >
-      <svg viewBox="0 0 100 100">
+      <svg viewBox={showPot ? "0 -70 125 170" : "0 0 100 100"}>
         <defs>
           <linearGradient id="cf-mug-grad" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#f5f0ea" />
@@ -89,6 +103,11 @@ export default function CoffeeLoader({
           <clipPath id="cf-mug-clip">
             <path d={`M${rimLeftX},${mugTop} L${botLeftX},${mugBottom} Q${(botLeftX + botRightX) / 2},${mugBottom + 5} ${botRightX},${mugBottom} L${rimRightX},${mugTop} Z`} />
           </clipPath>
+          {showPot && (
+            <clipPath id="cf-pot-clip">
+              <path d={potBodyPath} transform={potTransform} />
+            </clipPath>
+          )}
         </defs>
 
         {/* Saucer */}
@@ -128,7 +147,7 @@ export default function CoffeeLoader({
         {/* Liquid inside (clipped to mug shape) */}
         {progress > 0 && (
           <g clipPath="url(#cf-mug-clip)">
-            <path className="cf-wave" d={liquidPath} fill="url(#cf-liquid-grad)" />
+            <path className={`cf-wave${fluid ? " cf-fluid" : ""}`} d={liquidPath} fill="url(#cf-liquid-grad)" />
           </g>
         )}
 
@@ -140,6 +159,7 @@ export default function CoffeeLoader({
         {/* Liquid surface ellipse — sits on top */}
         {progress > 5 && (
           <ellipse
+            className={fluid ? "cf-fluid-surface" : undefined}
             cx="45"
             cy={liquidTop}
             rx={(liqRightX - liqLeftX) / 2}
@@ -155,6 +175,60 @@ export default function CoffeeLoader({
 
         {/* Left edge highlight */}
         <line x1={rimLeftX + 1} y1={mugTop + 3} x2={botLeftX + 1} y2={mugBottom - 2} stroke="rgba(255,255,255,0.2)" strokeWidth="0.7" />
+
+        {/* Percentage inside coffee */}
+        {showPercentage && progress > 5 && (
+          <text
+            x="45"
+            y={(liquidTop + mugBottom) / 2 + 2}
+            textAnchor="middle"
+            dominantBaseline="central"
+            className="cf-percentage-svg"
+            stroke={color}
+            fill="white"
+          >
+            {Math.round(progress)}%
+          </text>
+        )}
+
+        {/* Coffee pot */}
+        {showPot && (
+          <>
+            <g transform={potTransform}>
+              <path d={potBodyPath} fill="rgba(180,210,230,0.3)" stroke="#aaa" strokeWidth="0.7" />
+              <path d="M-10,-5 Q-9,5 -7,12" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeLinecap="round" />
+              <path d="M-6,-14 L-6,-17 Q0,-19 6,-17 L6,-14" fill="#4a4a4a" stroke="#3a3a3a" strokeWidth="0.6" />
+              <rect x="-2" y="-20" width="4" height="2" rx="1" fill="#3a3a3a" />
+              <path d="M10,-8 C18,-6 18,8 10,10" fill="none" stroke="#4a4a4a" strokeWidth="2.5" strokeLinecap="round" />
+              <path d="M10,-8 C16,-6 16,8 10,10" fill="none" stroke="#5a5a5a" strokeWidth="0.7" strokeLinecap="round" />
+              <path d="M-5,-14 L-10,-17 L-12,-13" fill="rgba(180,210,230,0.3)" stroke="#aaa" strokeWidth="0.7" strokeLinejoin="round" />
+            </g>
+
+            <rect
+              className={fluid ? "cf-fluid-pot" : undefined}
+              x="35"
+              y={potLiquidY}
+              width="90"
+              height="60"
+              fill={color}
+              opacity="0.75"
+              clipPath="url(#cf-pot-clip)"
+            />
+          </>
+        )}
+
+        {/* Pour stream */}
+        {streamVisible && (
+          <path
+            className="cf-stream"
+            d="M44,-32 Q44.5,-2 45,27"
+            fill="none"
+            stroke={color}
+            strokeWidth={streamWidth}
+            strokeLinecap="round"
+            opacity={streamOpacity}
+          />
+        )}
 
         {/* Steam */}
         <g className={`cf-steam-g ${showSteam ? "visible" : ""}`}>

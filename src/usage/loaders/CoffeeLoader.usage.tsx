@@ -14,6 +14,9 @@ const playgroundConfig: PropConfig[] = [
     description: "0-100 fill progress (auto-animates if omitted)",
     docDefault: "auto",
   },
+  { propName: "showPercentage", type: "toggle", default: false, description: "Show progress percentage text" },
+  { propName: "showPot", type: "toggle", default: false, description: "Show coffee pot pouring into the mug" },
+  { propName: "fluid", type: "toggle", default: false, description: "Gentle sloshing wave on the liquid" },
 ];
 
 export default createUsageEntry({

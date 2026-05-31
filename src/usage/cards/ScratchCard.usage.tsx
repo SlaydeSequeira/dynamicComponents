@@ -18,7 +18,6 @@ const playgroundConfig: PropConfig[] = [
   { propName: "overlayColor", type: "hex", default: "#888888", description: "Scratch overlay color", docDefault: "#888" },
   { propName: "brushSize", type: "slider", min: 10, max: 50, default: 25, description: "Brush radius in px" },
   { propName: "revealAt", type: "slider", min: 20, max: 80, default: 50, description: "% scratched to auto-reveal" },
-  { propName: "showPercentage", type: "boolean", default: false, description: "Show scratch percentage indicator" },
 ];
 
 const extraProps = [

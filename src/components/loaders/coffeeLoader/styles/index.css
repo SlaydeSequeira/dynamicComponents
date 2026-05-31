@@ -1,7 +1,7 @@
 .cf-container {
   position: relative;
   width: var(--cf-size);
-  height: var(--cf-size);
+  height: var(--cf-height, var(--cf-size));
 }
 
 .cf-container svg {
@@ -63,6 +63,58 @@
   50% { transform: translateX(1px); }
 }
 
+.cf-percentage-svg {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  stroke-width: 3;
+  paint-order: stroke;
+  pointer-events: none;
+}
+
+/* Fluid sloshing — mug liquid */
+.cf-wave.cf-fluid {
+  animation: cf-fluid-slosh 2.5s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes cf-fluid-slosh {
+  0%, 100% { transform: translateX(-2px) scaleX(0.97); }
+  50% { transform: translateX(2px) scaleX(1.03); }
+}
+
+/* Fluid — mug surface ellipse */
+.cf-fluid-surface {
+  animation: cf-fluid-surface 2.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes cf-fluid-surface {
+  0%, 100% { transform: translateX(-1.5px) scaleX(0.96); }
+  50% { transform: translateX(1.5px) scaleX(1.04); }
+}
+
+/* Fluid — pot liquid */
+.cf-fluid-pot {
+  animation: cf-fluid-pot-slosh 3s ease-in-out infinite;
+}
+
+@keyframes cf-fluid-pot-slosh {
+  0%, 100% { transform: translateY(-1px) translateX(-0.5px); }
+  50% { transform: translateY(1px) translateX(0.5px); }
+}
+
+/* Pour stream */
+.cf-stream {
+  animation: cf-stream-wobble 1.5s ease-in-out infinite;
+  transform-origin: top;
+}
+
+@keyframes cf-stream-wobble {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(0.8); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .cf-wisp, .cf-wave { animation: none; }
+  .cf-wisp, .cf-wave, .cf-stream, .cf-fluid-surface, .cf-fluid-pot { animation: none; }
 }

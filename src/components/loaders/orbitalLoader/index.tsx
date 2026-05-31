@@ -10,7 +10,7 @@ export default function OrbitalLoader({
   orbitals = 3,
   speed = 2,
 }: OrbitalLoaderProps) {
-  const count = Math.min(Math.max(orbitals, 1), 5);
+  const count = Math.min(Math.max(orbitals, 1), 8);
 
   return (
     <div

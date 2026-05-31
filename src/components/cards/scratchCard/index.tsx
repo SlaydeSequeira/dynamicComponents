@@ -35,7 +35,6 @@ export default function ScratchCard({
   brushSize = 25,
   revealAt = 50,
   onReveal,
-  showPercentage = false,
 }: ScratchCardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -282,9 +281,6 @@ export default function ScratchCard({
         <div className="sc-progress">
           <div className="sc-progress-fill" style={{ width: `${(scratchPct / revealAt) * 100}%` }} />
         </div>
-      )}
-      {showPercentage && !revealed && scratchPct > 0 && (
-        <div className="sc-percentage">{scratchPct}%</div>
       )}
     </div>
   );
