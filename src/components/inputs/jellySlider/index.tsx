@@ -6,6 +6,15 @@ import "./styles/index.css";
 
 export type { JellySliderProps } from "./interfaces";
 
+const MOUSE_MIN_X = 0.15;
+const MOUSE_MAX_X = 0.85;
+
+function clientXToValue(clientX: number, rect: DOMRect): number {
+  const normalized = (clientX - rect.left) / rect.width;
+  const clamped = Math.max(MOUSE_MIN_X, Math.min(MOUSE_MAX_X, normalized));
+  return (clamped - MOUSE_MIN_X) / (MOUSE_MAX_X - MOUSE_MIN_X);
+}
+
 export default function JellySliderComponent({
   value: controlledValue,
   onChange,
@@ -22,27 +31,8 @@ export default function JellySliderComponent({
   });
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const sliderRef = useRef<any>(null);
-  const rafRef = useRef(0);
-  const lastTimeRef = useRef(performance.now());
   const draggingRef = useRef(false);
-  const targetRef = useRef(value);
-  const resolutionRef = useRef([0, 0]);
   const [supported, setSupported] = useState(true);
-
-  targetRef.current = value;
-
-  const updateTarget = useCallback(
-    (clientX: number) => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      const normalized = Math.max(0, Math.min(1, ((clientX - rect.left) / rect.width - 0.15) / 0.7));
-      setValue(normalized);
-    },
-    [setValue],
-  );
 
   useEffect(() => {
     if (!navigator.gpu) {
@@ -50,87 +40,39 @@ export default function JellySliderComponent({
       return;
     }
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     let destroyed = false;
+    let cleanup: (() => void) | undefined;
 
     (async () => {
       const tgpu = await import("typegpu");
       const d = await import("typegpu/data");
-      const { JellySlider } = await import("gooui");
+      const { CanvasJellySlider } = await import("gooui");
 
       if (destroyed) return;
 
       const root = await tgpu.default.init();
       if (destroyed) { root.destroy(); return; }
 
-      const format = navigator.gpu.getPreferredCanvasFormat();
-      const ctx = canvas.getContext("webgpu");
-      if (!ctx) { root.destroy(); setSupported(false); return; }
-
-      ctx.configure({ device: root.device, format, alphaMode: "premultiplied" });
-
-      const slider = new JellySlider({
+      const slider = new CanvasJellySlider({
         root,
-        targetFormat: format,
         jellyColor: d.vec3f(...color),
         glowTint: d.vec3f(...glowTint),
       });
 
-      sliderRef.current = slider;
+      container.prepend(slider.canvas);
 
-      const ro = new ResizeObserver(([entry]) => {
-        const w = entry.contentRect.width * devicePixelRatio;
-        const h = entry.contentRect.height * devicePixelRatio;
-        resolutionRef.current = [w, h];
-        canvas.width = w;
-        canvas.height = h;
-        slider.handleResize(w, h);
-      });
-      ro.observe(canvas);
-
-      const render = () => {
-        if (destroyed) return;
-        const now = performance.now();
-        const dt = Math.min((now - lastTimeRef.current) / 1000, 0.1);
-        lastTimeRef.current = now;
-
-        slider.value += (targetRef.current - slider.value) * Math.min(1, dt * 10);
-        slider.update(dt);
-
-        const [rw, rh] = resolutionRef.current;
-        if (rw > 0 && rh > 0) {
-          slider.render(ctx.getCurrentTexture().createView(), rw, rh);
-        }
-
-        rafRef.current = requestAnimationFrame(render);
-      };
-
-      rafRef.current = requestAnimationFrame(render);
-
-      return () => {
-        destroyed = true;
-        cancelAnimationFrame(rafRef.current);
-        ro.disconnect();
+      cleanup = () => {
+        slider.canvas.remove();
         root.destroy();
       };
-    })().then((cleanup) => {
-      if (destroyed && cleanup) cleanup();
-      else if (cleanup) {
-        const prev = rafRef.current;
-        rafRef.current = 0;
-        cancelAnimationFrame(prev);
-        // Store cleanup for unmount
-        (containerRef.current as any)?.__cleanup?.();
-        if (containerRef.current) (containerRef.current as any).__cleanup = cleanup;
-      }
-    });
+    })();
 
     return () => {
       destroyed = true;
-      cancelAnimationFrame(rafRef.current);
-      (containerRef.current as any)?.__cleanup?.();
+      cleanup?.();
     };
   }, []);
 
@@ -138,17 +80,19 @@ export default function JellySliderComponent({
     (e: React.PointerEvent) => {
       draggingRef.current = true;
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
-      updateTarget(e.clientX);
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) setValue(clientXToValue(e.clientX, rect));
     },
-    [updateTarget],
+    [setValue],
   );
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent) => {
       if (!draggingRef.current) return;
-      updateTarget(e.clientX);
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) setValue(clientXToValue(e.clientX, rect));
     },
-    [updateTarget],
+    [setValue],
   );
 
   const handlePointerUp = useCallback(() => {
@@ -176,7 +120,6 @@ export default function JellySliderComponent({
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      <canvas ref={canvasRef} className="js-canvas" />
       {showPercentage && (
         <span className="js-label">{Math.round(value * 100)}%</span>
       )}

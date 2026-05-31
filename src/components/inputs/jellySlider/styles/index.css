@@ -20,14 +20,15 @@
 
 .js-label {
   position: absolute;
-  top: 12px;
-  left: 16px;
+  top: 8px;
+  left: 12px;
   color: #fff;
-  font: 600 20px/1 system-ui, sans-serif;
+  font: 600 16px/1 system-ui, sans-serif;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   opacity: 0.9;
   transition: opacity 0.2s ease;
+  z-index: 1;
 }
 
 .js-fallback {

@@ -6,7 +6,7 @@ import { ExampleSection, ExamplesPanel } from "../shared/ExampleSection";
 
 const playgroundConfig: PropConfig[] = [
   { propName: "width", type: "slider", min: 200, max: 600, default: 400, description: "Width in px" },
-  { propName: "height", type: "slider", min: 100, max: 300, default: 200, description: "Height in px" },
+  { propName: "height", type: "slider", min: 80, max: 200, default: 120, description: "Height in px" },
   { propName: "showPercentage", type: "toggle", default: true, description: "Show percentage label" },
 ];
 
@@ -30,7 +30,6 @@ const JellySliderExamples = () => {
           color={[1.0, 0.3, 0.5]}
           glowTint={[1.0, 0.2, 0.4]}
           width={350}
-          height={160}
           onChange={(v) => addLog(`Pink: ${(v * 100).toFixed(0)}%`)}
         />
       </ExampleSection>
@@ -39,7 +38,7 @@ const JellySliderExamples = () => {
           color={[0.2, 0.9, 0.5]}
           glowTint={[0.1, 0.8, 0.4]}
           width={250}
-          height={120}
+          height={100}
           onChange={(v) => addLog(`Green: ${(v * 100).toFixed(0)}%`)}
         />
       </ExampleSection>
