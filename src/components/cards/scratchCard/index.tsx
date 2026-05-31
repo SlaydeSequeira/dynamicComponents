@@ -1,6 +1,14 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import type { ScratchCardProps } from "./interfaces";
-import { DEFAULT_WIDTH, DEFAULT_HEIGHT, calcScratchPercent } from "./utils";
+import {
+  DEFAULT_WIDTH,
+  DEFAULT_HEIGHT,
+  DEFAULT_INTERNAL_COLOR,
+  DEFAULT_INNER_TEXT,
+  DEFAULT_OUTER_TEXT,
+  DEFAULT_OVERLAY_COLOR,
+  calcScratchPercent,
+} from "./utils";
 import "./styles/index.css";
 
 export type { ScratchCardProps } from "./interfaces";
@@ -31,7 +39,10 @@ export default function ScratchCard({
   children,
   width = DEFAULT_WIDTH,
   height = DEFAULT_HEIGHT,
-  overlayColor = "#888",
+  overlayColor = DEFAULT_OVERLAY_COLOR,
+  outerText = DEFAULT_OUTER_TEXT,
+  internalColor = DEFAULT_INTERNAL_COLOR,
+  innerText = DEFAULT_INNER_TEXT,
   brushSize = 25,
   revealAt = 50,
   onReveal,
@@ -100,8 +111,8 @@ export default function ScratchCard({
     ctx.fillStyle = "rgba(255,255,255,0.25)";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("Scratch here!", width / 2, height / 2);
-  }, [width, height, overlayColor]);
+    ctx.fillText(outerText, width / 2, height / 2);
+  }, [width, height, overlayColor, outerText]);
 
   useEffect(() => {
     const pCanvas = particleCanvasRef.current;
@@ -248,7 +259,13 @@ export default function ScratchCard({
       className="sc-container"
       style={{ "--sc-w": `${width}px`, "--sc-h": `${height}px` } as React.CSSProperties}
     >
-      <div className="sc-content">{children}</div>
+      <div className="sc-content">
+        {children ?? (
+          <div className="sc-inner-face" style={{ background: internalColor }}>
+            {innerText}
+          </div>
+        )}
+      </div>
       <canvas
         ref={canvasRef}
         className={`sc-canvas ${revealed ? "revealed" : ""}`}
