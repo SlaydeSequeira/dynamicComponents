@@ -12,6 +12,8 @@ export type Mode = "day" | "night";
 
 export interface CompleteOrderButtonProps {
   mode?: Mode;
+  /** When true, renders a separate high-detail truck and scenery layer. Default styling is unchanged when false. */
+  highDefinition?: boolean;
   truckColor?: string;
   truckSecondaryColor?: string;
   boxColor?: string;

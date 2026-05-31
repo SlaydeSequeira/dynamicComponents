@@ -1,0 +1,161 @@
+.lbt-shell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lbt-wire {
+  width: 2px;
+  height: var(--lbt-wire-h);
+  background: #444;
+}
+
+.lbt-hanging {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.lbt-fixture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Metal screw cap with thread ridges */
+.lbt-cap {
+  width: var(--lbt-cap-w);
+  height: var(--lbt-cap-h);
+  border-radius: 3px 3px 1px 1px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent calc(3px * var(--lbt-scale)),
+      rgba(0, 0, 0, 0.12) calc(3px * var(--lbt-scale)),
+      rgba(0, 0, 0, 0.12) calc(4.5px * var(--lbt-scale))
+    ),
+    linear-gradient(90deg, #777 0%, #aaa 25%, #ccc 50%, #aaa 75%, #777 100%);
+  position: relative;
+  z-index: 2;
+}
+
+/* Glass bulb — pear shape */
+.lbt-glass {
+  width: var(--lbt-glass-w);
+  height: var(--lbt-glass-h);
+  border-radius: 20% 20% 50% 50% / 15% 15% 50% 50%;
+  background: radial-gradient(
+    ellipse at 35% 30%,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(210, 210, 220, 0.2) 50%,
+    rgba(190, 190, 200, 0.15) 100%
+  );
+  border: 1.5px solid rgba(200, 200, 210, 0.3);
+  margin-top: calc(-1 * var(--lbt-overlap));
+  position: relative;
+  z-index: 1;
+  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  overflow: visible;
+}
+
+.lbt-glass.lit {
+  background: radial-gradient(
+    ellipse at 45% 40%,
+    rgba(255, 255, 240, 0.95) 0%,
+    rgba(255, 240, 180, 0.85) 20%,
+    rgba(255, 215, 110, 0.65) 45%,
+    rgba(255, 195, 70, 0.35) 70%,
+    rgba(255, 180, 50, 0.12) 100%
+  );
+  border-color: rgba(255, 210, 100, 0.4);
+  box-shadow:
+    0 0 15px 5px rgba(255, 200, 80, 0.35),
+    0 0 40px 15px rgba(255, 200, 80, 0.15),
+    0 0 80px 30px rgba(255, 200, 80, 0.08);
+}
+
+/* Downward light cone when lit */
+.lbt-glass.lit::after {
+  content: "";
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150%;
+  height: 40px;
+  background: radial-gradient(
+    ellipse at top,
+    rgba(255, 200, 80, 0.12) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Filament SVG */
+.lbt-filament {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35%;
+  height: 45%;
+  stroke: rgba(150, 150, 150, 0.35);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease, filter 0.3s ease;
+}
+
+.lbt-glass.lit .lbt-filament {
+  stroke: rgba(255, 210, 60, 0.9);
+  filter: drop-shadow(0 0 4px rgba(255, 200, 50, 0.7));
+}
+
+/* Pull cord area */
+.lbt-pull-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lbt-cord {
+  width: 2px;
+  height: var(--lbt-cord-h);
+  background: linear-gradient(180deg, #888, #777 50%, #666);
+}
+
+/* Pull knob / bead */
+.lbt-knob {
+  width: var(--lbt-knob-w);
+  height: var(--lbt-knob-h);
+  background: linear-gradient(135deg, #f0ece0, #e4e0d4 30%, #d5d1c5 70%, #c8c4b8);
+  border-radius: 3px;
+  cursor: grab;
+  touch-action: none;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.lbt-knob:active {
+  cursor: grabbing;
+}
+
+.lbt-knob:focus-visible {
+  outline: 2px solid #4a90d9;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lbt-glass,
+  .lbt-filament {
+    transition-duration: 0.01ms;
+  }
+}

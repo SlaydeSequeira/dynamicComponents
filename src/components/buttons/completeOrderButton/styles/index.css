@@ -66,10 +66,21 @@
 .cob-sky.active { clip-path: inset(0 0 0 0); }
 
 .cob-sun {
-  position: absolute; top: 13px; left: 28px; width: 24px; height: 24px; z-index: 1;
+  position: absolute; top: 13px; left: 40px; width: 24px; height: 24px; z-index: 1;
   border-radius: 50%;
   background: radial-gradient(circle at 50% 45%, #fff7c8, #ffe070 72%);
   box-shadow: 0 0 16px 5px rgba(255,224,112,.55);
+}
+
+.cob-moon {
+  position: absolute;
+  top: 13px;
+  left: 40px;
+  width: 24px;
+  height: 24px;
+  z-index: 1;
+  fill: #ece8d4;
+  filter: drop-shadow(0 0 5px rgba(235, 235, 210, 0.45));
 }
 
 /* stars (night only) */
@@ -138,13 +149,9 @@
 .cob-night .cob-sky {
   background: linear-gradient(180deg, #0e1838 0%, #1a2a55 55%, #314069 100%);
 }
-.cob-night .cob-sun {
-  background: radial-gradient(circle at 38% 36%, #fbf7e6, #dcd8c2 75%);
-  box-shadow: 0 0 14px 4px rgba(235,235,210,.4);
-}
-.cob-night .cob-sun::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(circle at 70% 62%, rgba(140,140,128,.28), transparent 46%);
+.cob-night .cob-moon {
+  fill: #f2eed8;
+  filter: drop-shadow(0 0 6px rgba(235, 235, 210, 0.4));
 }
 .cob-night .cob-stars { opacity: 1; }
 .cob-night .cob-cloud,

@@ -6,6 +6,12 @@ import { ExampleSection, ExamplesPanel } from "../shared/ExampleSection";
 
 const playgroundConfig: PropConfig[] = [
   {
+    propName: "highDefinition",
+    type: "toggle",
+    default: false,
+    description: "Ultra-detailed truck, trees, and scenery",
+  },
+  {
     propName: "mode",
     type: "dropdown",
     options: ["day", "night"],
@@ -56,6 +62,12 @@ const CompleteOrderButtonExamples = () => {
       </ExampleSection>
       <ExampleSection title="Night Mode" padding={24}>
         <CompleteOrderButton mode="night" onComplete={() => addLog("Night mode completed")} />
+      </ExampleSection>
+      <ExampleSection title="High Definition (Day)" description="Turn on highDefinition for the full detail pass." padding={24}>
+        <CompleteOrderButton highDefinition onComplete={() => addLog("HD day completed")} />
+      </ExampleSection>
+      <ExampleSection title="High Definition (Night)" padding={24}>
+        <CompleteOrderButton highDefinition mode="night" onComplete={() => addLog("HD night completed")} />
       </ExampleSection>
       <ExampleSection title="Custom Colors" padding={24}>
         <CompleteOrderButton
