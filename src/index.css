@@ -60,13 +60,13 @@ a {
   display: none;
 }
 
+.usage-sidebar {
+  padding: 24px 0;
+}
+
 @media (max-width: 768px) {
   .sidebar-toggle {
     display: flex;
-  }
-
-  .sidebar-toggle.open {
-    left: 220px;
   }
 
   .sidebar-overlay {
@@ -89,6 +89,7 @@ a {
 
   .usage-sidebar.open {
     transform: translateX(0);
+    padding-top: 56px;
   }
 
   .usage-main {

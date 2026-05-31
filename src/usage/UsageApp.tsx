@@ -38,7 +38,6 @@ export default function UsageApp() {
           minWidth: 260,
           background: "#16162a",
           borderRight: "1px solid #2a2a44",
-          padding: "24px 0",
           display: "flex",
           flexDirection: "column",
           overflow: "auto",
