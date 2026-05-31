@@ -76,13 +76,17 @@ export default function CompleteOrderButton({
   }
 
   return (
-    <button
-      className={`cob-btn cob-${phase} ${sceneActive ? "active" : ""} ${mode === "night" ? "cob-night" : ""}`}
+    <div
+      className={`cob-shell ${mode === "night" ? "cob-night" : ""}`}
       style={rootStyle as React.CSSProperties}
-      onClick={run}
-      disabled={animating}
-      aria-label={label}
     >
+      <button
+        className="cob-hit"
+        onClick={run}
+        disabled={animating}
+        aria-label={label}
+      />
+
       <span className={`cob-label ${phase === PHASES.IDLE ? "show" : ""}`}>
         {label}
       </span>
@@ -101,7 +105,7 @@ export default function CompleteOrderButton({
         {successLabel}
       </span>
 
-      <span className="cob-sky" aria-hidden="true">
+      <span className={`cob-sky ${sceneActive ? "active" : ""}`} aria-hidden="true">
         <span className="cob-sun" />
         <span className="cob-stars" />
         <span className="cob-cloud c1" />
@@ -153,6 +157,6 @@ export default function CompleteOrderButton({
         <span className="cob-wheel w1"><i /></span>
         <span className="cob-wheel w2"><i /></span>
       </span>
-    </button>
+    </div>
   );
 }
