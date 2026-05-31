@@ -3,6 +3,8 @@ import { PHASES, ORDER, TIMINGS } from "./utils";
 import { speedToMult } from "../../shared/utils";
 import { CheckIcon } from "../../shared/CheckIcon";
 import { usePhaseAnimation } from "../../shared/usePhaseAnimation";
+import { SendIcon } from "./svg/SendIcon";
+import { PlaneSvg } from "./svg/PlaneSvg";
 import "./styles/index.css";
 
 export type { PaperAirplaneSendProps } from "./interfaces";
@@ -50,22 +52,7 @@ export default function PaperAirplaneSend({
       <span className="pas-glow" />
 
       <span className={`pas-label ${phase === PHASES.IDLE ? "show" : ""}`}>
-        <svg className="pas-send-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path
-            d="M22 2L11 13"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M22 2L15 22L11 13L2 9L22 2Z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <SendIcon />
         {label}
       </span>
 
@@ -73,27 +60,7 @@ export default function PaperAirplaneSend({
         className={`pas-plane ${showPlane ? "show" : ""} ${planeFlying ? "fly" : ""}`}
         aria-hidden="true"
       >
-        <svg viewBox="0 0 32 32" fill="none">
-          <path
-            d="M30,16 L2,5 L12,16 Z"
-            fill="var(--pas-plane-color, #fff)"
-          />
-          <path
-            d="M30,16 L2,27 L12,16 Z"
-            fill="var(--pas-plane-color, #fff)"
-            opacity="0.7"
-          />
-          <path
-            d="M12,16 L16,24 L17,17 Z"
-            fill="var(--pas-plane-color, #fff)"
-            opacity="0.5"
-          />
-          <line
-            x1="30" y1="16" x2="12" y2="16"
-            stroke="rgba(0,0,0,0.08)"
-            strokeWidth="0.5"
-          />
-        </svg>
+        <PlaneSvg />
       </span>
 
       <span

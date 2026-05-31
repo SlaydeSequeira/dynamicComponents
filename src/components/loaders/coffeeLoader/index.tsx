@@ -1,6 +1,21 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import type { CoffeeLoaderProps } from "./interfaces";
 import { DEFAULT_SIZE } from "./utils";
+import { useAutoProgress } from "./hooks/useAutoProgress";
+import {
+  POT_BODY_PATH,
+  POT_TRANSFORM,
+  MUG_TOP,
+  MUG_BOTTOM,
+  RIM_LEFT_X,
+  RIM_RIGHT_X,
+  BOT_LEFT_X,
+  BOT_RIGHT_X,
+  computeMugClipPath,
+  computeLiquidGeometry,
+  computeLiquidPath,
+  computeFoamPath,
+} from "./logic/geometry";
 import "./styles/index.css";
 
 export type { CoffeeLoaderProps } from "./interfaces";
@@ -13,62 +28,24 @@ export default function CoffeeLoader({
   showPot = false,
   fluid = false,
 }: CoffeeLoaderProps) {
-  const [autoProgress, setAutoProgress] = useState(0);
-  const progress = controlledProgress ?? autoProgress;
-
-  useEffect(() => {
-    if (controlledProgress !== undefined) return;
-    const interval = setInterval(() => {
-      setAutoProgress((p) => (p >= 100 ? 0 : p + 0.5));
-    }, 50);
-    return () => clearInterval(interval);
-  }, [controlledProgress]);
-
+  const progress = useAutoProgress(controlledProgress);
   const showSteam = progress > 50;
 
-  // Pot geometry
-  const potBodyPath = "M-5,-14 C-8,-10 -12,-3 -12,3 Q-11,11 -6,14 Q0,17 6,14 Q11,11 12,3 C12,-3 8,-10 5,-14 Z";
-  const potTransform = "translate(88,-30) rotate(-45) scale(2.5)";
-  const potLiquidY = -48 + (progress / 100) * 53;
+  const { liquidTop, liqLeftX, liqRightX, potLiquidY, streamWidth, streamOpacity } =
+    computeLiquidGeometry(progress);
+
   const streamVisible = showPot && progress > 0 && progress < 97;
-  const streamWidth = 3 - (progress / 100) * 2.2;
-  const streamOpacity = 1 - (progress / 100) * 0.6;
+  const mugClipPath = computeMugClipPath();
 
-  // Mug geometry (in a 100x100 viewBox)
-  const mugTop = 28;
-  const mugBottom = 78;
-  const mugHeight = mugBottom - mugTop;
-  const rimLeftX = 22;
-  const rimRightX = 68;
-  const botLeftX = 28;
-  const botRightX = 62;
+  const liquidPath = useMemo(
+    () => computeLiquidPath(progress, liquidTop, liqLeftX, liqRightX),
+    [progress, liquidTop, liqLeftX, liqRightX],
+  );
 
-  // Liquid fill — interpolate Y from bottom to top
-  const liquidTop = mugBottom - (progress / 100) * mugHeight;
-
-  // At liquidTop, interpolate X between rim and bottom positions
-  const tLiq = (liquidTop - mugTop) / mugHeight;
-  const liqLeftX = rimLeftX + (botLeftX - rimLeftX) * tLiq;
-  const liqRightX = rimRightX + (botRightX - rimRightX) * tLiq;
-
-  const liquidPath = useMemo(() => {
-    if (progress <= 0) return "";
-    return `M${liqLeftX},${liquidTop}
-            Q${(liqLeftX + liqRightX) / 2},${liquidTop + 2} ${liqRightX},${liquidTop}
-            L${botRightX},${mugBottom}
-            Q${(botLeftX + botRightX) / 2},${mugBottom + 4} ${botLeftX},${mugBottom}
-            Z`;
-  }, [progress, liquidTop, liqLeftX, liqRightX, botLeftX, botRightX, mugBottom]);
-
-  // Foam sits on top of liquid when > 20%
-  const foamPath = useMemo(() => {
-    if (progress < 20) return "";
-    const foamY = liquidTop;
-    return `M${liqLeftX},${foamY}
-            Q${(liqLeftX + liqRightX) / 2},${foamY - 1.5} ${liqRightX},${foamY}
-            Q${(liqLeftX + liqRightX) / 2},${foamY + 3} ${liqLeftX},${foamY}
-            Z`;
-  }, [progress, liquidTop, liqLeftX, liqRightX]);
+  const foamPath = useMemo(
+    () => computeFoamPath(progress, liquidTop, liqLeftX, liqRightX),
+    [progress, liquidTop, liqLeftX, liqRightX],
+  );
 
   return (
     <div
@@ -101,11 +78,11 @@ export default function CoffeeLoader({
             <stop offset="100%" stopColor={color} stopOpacity="0.85" />
           </linearGradient>
           <clipPath id="cf-mug-clip">
-            <path d={`M${rimLeftX},${mugTop} L${botLeftX},${mugBottom} Q${(botLeftX + botRightX) / 2},${mugBottom + 5} ${botRightX},${mugBottom} L${rimRightX},${mugTop} Z`} />
+            <path d={mugClipPath} />
           </clipPath>
           {showPot && (
             <clipPath id="cf-pot-clip">
-              <path d={potBodyPath} transform={potTransform} />
+              <path d={POT_BODY_PATH} transform={POT_TRANSFORM} />
             </clipPath>
           )}
         </defs>
@@ -136,13 +113,10 @@ export default function CoffeeLoader({
         />
 
         {/* Mug body outer */}
-        <path
-          d={`M${rimLeftX},${mugTop} L${botLeftX},${mugBottom} Q${(botLeftX + botRightX) / 2},${mugBottom + 5} ${botRightX},${mugBottom} L${rimRightX},${mugTop} Z`}
-          fill="url(#cf-mug-grad)"
-        />
+        <path d={mugClipPath} fill="url(#cf-mug-grad)" />
 
         {/* Mug interior (dark) */}
-        <ellipse cx="45" cy={mugTop} rx="23" ry="5" fill="url(#cf-mug-inner)" />
+        <ellipse cx="45" cy={MUG_TOP} rx="23" ry="5" fill="url(#cf-mug-inner)" />
 
         {/* Liquid inside (clipped to mug shape) */}
         {progress > 0 && (
@@ -170,17 +144,17 @@ export default function CoffeeLoader({
         )}
 
         {/* Rim highlight */}
-        <ellipse cx="45" cy={mugTop} rx="23" ry="5" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
-        <ellipse cx="45" cy={mugTop + 1} rx="21" ry="3.5" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.3" />
+        <ellipse cx="45" cy={MUG_TOP} rx="23" ry="5" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+        <ellipse cx="45" cy={MUG_TOP + 1} rx="21" ry="3.5" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.3" />
 
         {/* Left edge highlight */}
-        <line x1={rimLeftX + 1} y1={mugTop + 3} x2={botLeftX + 1} y2={mugBottom - 2} stroke="rgba(255,255,255,0.2)" strokeWidth="0.7" />
+        <line x1={RIM_LEFT_X + 1} y1={MUG_TOP + 3} x2={BOT_LEFT_X + 1} y2={MUG_BOTTOM - 2} stroke="rgba(255,255,255,0.2)" strokeWidth="0.7" />
 
         {/* Percentage inside coffee */}
         {showPercentage && progress > 5 && (
           <text
             x="45"
-            y={(liquidTop + mugBottom) / 2 + 2}
+            y={(liquidTop + MUG_BOTTOM) / 2 + 2}
             textAnchor="middle"
             dominantBaseline="central"
             className="cf-percentage-svg"
@@ -194,8 +168,8 @@ export default function CoffeeLoader({
         {/* Coffee pot */}
         {showPot && (
           <>
-            <g transform={potTransform}>
-              <path d={potBodyPath} fill="rgba(180,210,230,0.3)" stroke="#aaa" strokeWidth="0.7" />
+            <g transform={POT_TRANSFORM}>
+              <path d={POT_BODY_PATH} fill="rgba(180,210,230,0.3)" stroke="#aaa" strokeWidth="0.7" />
               <path d="M-10,-5 Q-9,5 -7,12" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeLinecap="round" />
               <path d="M-6,-14 L-6,-17 Q0,-19 6,-17 L6,-14" fill="#4a4a4a" stroke="#3a3a3a" strokeWidth="0.6" />
               <rect x="-2" y="-20" width="4" height="2" rx="1" fill="#3a3a3a" />
