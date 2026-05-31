@@ -1,4 +1,5 @@
 import { useState, useCallback, type ComponentType } from "react";
+import { EventLog, useEventLog } from "../shared/EventLog";
 import inputRenderers from "./inputTypes";
 import type { PropConfig } from "./types";
 
@@ -48,7 +49,7 @@ function buildProps(
 
 export default function Playground({ component: Component, config }: PlaygroundProps) {
   const [state, setState] = useState(() => buildInitialState(config));
-  const [log, setLog] = useState<string[]>([]);
+  const { log, addLog, clearLog } = useEventLog();
 
   const update = useCallback(
     (propName: string, value: unknown) =>
@@ -58,14 +59,8 @@ export default function Playground({ component: Component, config }: PlaygroundP
 
   const resetAll = useCallback(() => {
     setState(buildInitialState(config));
-    setLog([]);
-  }, [config]);
-
-  const addLog = useCallback(
-    (msg: string) =>
-      setLog((prev) => [...prev.slice(-4), `${new Date().toLocaleTimeString()} - ${msg}`]),
-    []
-  );
+    clearLog();
+  }, [config, clearLog]);
 
   const resolvedProps = buildProps(config, state, update);
   resolvedProps.onComplete = () => addLog("onComplete fired");
@@ -171,26 +166,7 @@ export default function Playground({ component: Component, config }: PlaygroundP
         })}
       </div>
 
-      {log.length > 0 && (
-        <div
-          style={{
-            marginTop: 16,
-            padding: 14,
-            background: "#1a1a2e",
-            borderRadius: 8,
-          }}
-        >
-          <div style={{ fontSize: 12, color: "#555", marginBottom: 6 }}>Event Log</div>
-          {log.map((entry, i) => (
-            <div
-              key={i}
-              style={{ fontSize: 13, color: "#58d499", fontFamily: "monospace" }}
-            >
-              {entry}
-            </div>
-          ))}
-        </div>
-      )}
+      <EventLog entries={log} />
     </div>
   );
 }
