@@ -1,7 +1,5 @@
 import type { Phase } from "../interfaces";
 
-export { shade, speedToMult } from "../../../shared/utils";
-
 export const PHASES: Record<string, Phase> = {
   IDLE: "idle",
   REVEAL: "reveal",

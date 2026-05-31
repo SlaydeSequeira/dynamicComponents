@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import type { SlideToActionProps } from "./interfaces";
-import { BASE_WIDTH, BASE_HEIGHT, KNOB_PAD, clamp } from "./utils";
+import { BASE_WIDTH, BASE_HEIGHT, KNOB_PAD } from "./utils";
+import { clamp } from "../../shared/utils";
 import "./styles/index.css";
 
 export type { SlideToActionProps } from "./interfaces";

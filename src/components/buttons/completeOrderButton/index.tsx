@@ -1,5 +1,6 @@
 import type { CompleteOrderButtonProps, Phase } from "./interfaces";
-import { PHASES, ORDER, TIMINGS, shade, speedToMult } from "./utils";
+import { PHASES, ORDER, TIMINGS } from "./utils";
+import { shade, speedToMult } from "../../shared/utils";
 import { usePhaseAnimation } from "../../shared/usePhaseAnimation";
 import HdHillsSvg from "./hd/HdHillsSvg";
 import {

@@ -1,5 +1,7 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { clamp } from "../../shared/utils";
+import { useControllableState } from "../../shared/useControllableState";
+import { toggleKeyHandler } from "../../shared/keyboard";
 import type { LightBulbToggleProps } from "./interfaces";
 import {
   ANGLE_STIFFNESS,
@@ -58,9 +60,11 @@ export default function LightBulbToggle({
   onChange,
   scale = 1,
 }: LightBulbToggleProps) {
-  const [internalOn, setInternalOn] = useState(false);
-  const isControlled = controlledOn !== undefined;
-  const isOn = isControlled ? controlledOn : internalOn;
+  const [isOn, setIsOn] = useControllableState({
+    controlledValue: controlledOn,
+    defaultValue: false,
+    onChange,
+  });
 
   const shellRef = useRef<HTMLDivElement>(null);
   const cordRef = useRef<HTMLDivElement>(null);
@@ -144,10 +148,8 @@ export default function LightBulbToggle({
   }, [updateVisuals]);
 
   const toggle = useCallback(() => {
-    const next = !isOnRef.current;
-    if (!isControlled) setInternalOn(next);
-    onChange?.(next);
-  }, [isControlled, onChange]);
+    setIsOn(!isOnRef.current);
+  }, [setIsOn]);
 
   const startSpring = useCallback(
     (state: PhysicsState) => {

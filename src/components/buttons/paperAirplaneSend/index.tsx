@@ -1,5 +1,6 @@
 import type { PaperAirplaneSendProps, Phase } from "./interfaces";
-import { PHASES, ORDER, TIMINGS, speedToMult } from "./utils";
+import { PHASES, ORDER, TIMINGS } from "./utils";
+import { speedToMult } from "../../shared/utils";
 import { usePhaseAnimation } from "../../shared/usePhaseAnimation";
 import "./styles/index.css";
 

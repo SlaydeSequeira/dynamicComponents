@@ -1,6 +1,8 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import type { DayNightToggleProps } from "./interfaces";
 import { BASE_WIDTH, BASE_HEIGHT, KNOB_SIZE, KNOB_PAD } from "./utils";
+import { useControllableState } from "../../shared/useControllableState";
+import { toggleKeyHandler } from "../../shared/keyboard";
 import "./styles/index.css";
 
 export type { DayNightToggleProps } from "./interfaces";
@@ -10,15 +12,13 @@ export default function DayNightToggle({
   onChange,
   scale = 1,
 }: DayNightToggleProps) {
-  const [internalNight, setInternalNight] = useState(false);
-  const isControlled = controlledNight !== undefined;
-  const isNight = isControlled ? controlledNight : internalNight;
+  const [isNight, setIsNight] = useControllableState({
+    controlledValue: controlledNight,
+    defaultValue: false,
+    onChange,
+  });
 
-  const toggle = useCallback(() => {
-    const next = !isNight;
-    if (!isControlled) setInternalNight(next);
-    onChange?.(next);
-  }, [isNight, isControlled, onChange]);
+  const toggle = useCallback(() => setIsNight(!isNight), [isNight, setIsNight]);
 
   const vars = {
     "--dnt-w": `${BASE_WIDTH * scale}px`,
@@ -36,12 +36,7 @@ export default function DayNightToggle({
       role="switch"
       aria-checked={isNight}
       tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === " " || e.key === "Enter") {
-          e.preventDefault();
-          toggle();
-        }
-      }}
+      onKeyDown={toggleKeyHandler(toggle)}
     >
       <div className="dnt-track" />
 

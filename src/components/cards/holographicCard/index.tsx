@@ -1,6 +1,7 @@
-import { useRef, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import type { HolographicCardProps } from "./interfaces";
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_INTENSITY } from "./utils";
+import { useMouseTilt } from "../../shared/useMouseTilt";
 import "./styles/index.css";
 
 export type { HolographicCardProps } from "./interfaces";
@@ -12,44 +13,36 @@ export default function HolographicCard({
   intensity = DEFAULT_INTENSITY,
   tilt = true,
 }: HolographicCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [style, setStyle] = useState<React.CSSProperties>({});
+  const { ref, style: tiltStyle, handlers, getNormalized } = useMouseTilt({ maxTilt: tilt ? 10 : 0 });
+  const [holoStyle, setHoloStyle] = useState<React.CSSProperties>({});
 
   const handleMove = useCallback(
     (e: React.MouseEvent) => {
-      const el = cardRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-
-      const angle = Math.atan2(y - 0.5, x - 0.5) * (180 / Math.PI) + 90;
-      const rotX = tilt ? (0.5 - y) * 20 : 0;
-      const rotY = tilt ? (x - 0.5) * 20 : 0;
-
-      setStyle({
-        "--hc-mx": `${x * 100}%`,
-        "--hc-my": `${y * 100}%`,
+      handlers.onMouseMove(e);
+      const pos = getNormalized(e);
+      if (!pos) return;
+      const angle = Math.atan2(pos.y - 0.5, pos.x - 0.5) * (180 / Math.PI) + 90;
+      setHoloStyle({
+        "--hc-mx": `${pos.x * 100}%`,
+        "--hc-my": `${pos.y * 100}%`,
         "--hc-angle": `${angle}deg`,
-        transform: `rotateX(${rotX}deg) rotateY(${rotY}deg)`,
       } as React.CSSProperties);
     },
-    [tilt]
+    [handlers, getNormalized]
   );
 
   const handleLeave = useCallback(() => {
-    setStyle({
+    handlers.onMouseLeave();
+    setHoloStyle({
       "--hc-mx": "50%",
       "--hc-my": "50%",
       "--hc-angle": "135deg",
-      transform: "rotateX(0deg) rotateY(0deg)",
-      transition: "transform 0.5s ease",
     } as React.CSSProperties);
-  }, []);
+  }, [handlers]);
 
   const handleEnter = useCallback(() => {
-    setStyle((s) => ({ ...s, transition: "none" }));
-  }, []);
+    handlers.onMouseEnter();
+  }, [handlers]);
 
   const vars = {
     "--hc-w": `${width}px`,
@@ -60,9 +53,9 @@ export default function HolographicCard({
   return (
     <div className="hc-wrap" style={vars}>
       <div
-        ref={cardRef}
+        ref={ref}
         className="hc-card"
-        style={style}
+        style={{ ...tiltStyle, ...holoStyle }}
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
         onMouseEnter={handleEnter}

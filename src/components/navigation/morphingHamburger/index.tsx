@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import type { MorphingHamburgerProps } from "./interfaces";
 import { DEFAULT_SIZE, DEFAULT_THICKNESS } from "./utils";
+import { useControllableState } from "../../shared/useControllableState";
 import "./styles/index.css";
 
 export type { MorphingHamburgerProps } from "./interfaces";
@@ -12,15 +13,13 @@ export default function MorphingHamburger({
   color = "#ffffff",
   thickness = DEFAULT_THICKNESS,
 }: MorphingHamburgerProps) {
-  const [internalOpen, setInternalOpen] = useState(false);
-  const isControlled = controlledOpen !== undefined;
-  const isOpen = isControlled ? controlledOpen : internalOpen;
+  const [isOpen, setIsOpen] = useControllableState({
+    controlledValue: controlledOpen,
+    defaultValue: false,
+    onChange,
+  });
 
-  const toggle = useCallback(() => {
-    const next = !isOpen;
-    if (!isControlled) setInternalOpen(next);
-    onChange?.(next);
-  }, [isOpen, isControlled, onChange]);
+  const toggle = useCallback(() => setIsOpen(!isOpen), [isOpen, setIsOpen]);
 
   const vars = {
     "--mh-size": `${size}px`,

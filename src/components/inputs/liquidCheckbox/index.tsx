@@ -1,6 +1,8 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import type { LiquidCheckboxProps } from "./interfaces";
 import { DEFAULT_SIZE } from "./utils";
+import { useControllableState } from "../../shared/useControllableState";
+import { toggleKeyHandler } from "../../shared/keyboard";
 import "./styles/index.css";
 
 export type { LiquidCheckboxProps } from "./interfaces";
@@ -12,15 +14,13 @@ export default function LiquidCheckbox({
   color = "#7cb3f5",
   label,
 }: LiquidCheckboxProps) {
-  const [internalChecked, setInternalChecked] = useState(false);
-  const isControlled = controlledChecked !== undefined;
-  const checked = isControlled ? controlledChecked : internalChecked;
+  const [checked, setChecked] = useControllableState({
+    controlledValue: controlledChecked,
+    defaultValue: false,
+    onChange,
+  });
 
-  const toggle = useCallback(() => {
-    const next = !checked;
-    if (!isControlled) setInternalChecked(next);
-    onChange?.(next);
-  }, [checked, isControlled, onChange]);
+  const toggle = useCallback(() => setChecked(!checked), [checked, setChecked]);
 
   return (
     <div
@@ -30,9 +30,7 @@ export default function LiquidCheckbox({
       role="checkbox"
       aria-checked={checked}
       tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(); }
-      }}
+      onKeyDown={toggleKeyHandler(toggle)}
     >
       <div className="lc-box">
         <div className="lc-fill">

@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
 import type { EmojiRatingProps } from "./interfaces";
 import { DEFAULT_WIDTH, getFace } from "./utils";
+import { useControllableState } from "../../shared/useControllableState";
 import "./styles/index.css";
 
 export type { EmojiRatingProps } from "./interfaces";
@@ -11,17 +11,11 @@ export default function EmojiRating({
   width = DEFAULT_WIDTH,
   emojiSize = 48,
 }: EmojiRatingProps) {
-  const [internalValue, setInternalValue] = useState(0.5);
-  const isControlled = controlledValue !== undefined;
-  const value = isControlled ? controlledValue : internalValue;
-
-  const handleChange = useCallback(
-    (v: number) => {
-      if (!isControlled) setInternalValue(v);
-      onChange?.(v);
-    },
-    [isControlled, onChange]
-  );
+  const [value, handleChange] = useControllableState({
+    controlledValue,
+    defaultValue: 0.5,
+    onChange,
+  });
 
   const face = getFace(value);
   const trackUsable = width - emojiSize;
