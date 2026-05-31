@@ -1,0 +1,44 @@
+.ol-container {
+  position: relative;
+  width: var(--ol-size);
+  height: var(--ol-size);
+}
+
+.ol-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20%;
+  height: 20%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--ol-core);
+  box-shadow: 0 0 12px var(--ol-core);
+}
+
+.ol-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: ol-spin var(--ol-speed) linear infinite;
+}
+
+.ol-dot {
+  position: absolute;
+  width: 14%;
+  height: 14%;
+  border-radius: 50%;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px var(--ol-dot-color);
+  background: var(--ol-dot-color);
+}
+
+@keyframes ol-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ol-ring { animation-duration: 0.01ms; }
+}

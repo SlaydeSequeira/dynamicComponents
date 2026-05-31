@@ -1,0 +1,50 @@
+.mh-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mh-box {
+  position: relative;
+  width: var(--mh-size);
+  height: var(--mh-size);
+}
+
+.mh-line {
+  position: absolute;
+  left: 10%;
+  width: 80%;
+  height: var(--mh-thick);
+  background: var(--mh-color);
+  border-radius: 999px;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease;
+}
+
+.mh-line.l1 { top: 22%; }
+.mh-line.l2 { top: 50%; transform: translateY(-50%); }
+.mh-line.l3 { bottom: 22%; }
+
+.mh-btn.open .mh-line.l1 {
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+.mh-btn.open .mh-line.l2 {
+  opacity: 0;
+  transform: translateY(-50%) scaleX(0);
+}
+.mh-btn.open .mh-line.l3 {
+  bottom: auto;
+  top: 50%;
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mh-line { transition-duration: 0.01ms; }
+}

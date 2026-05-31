@@ -1,0 +1,80 @@
+.er-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: var(--er-w);
+}
+
+.er-track-wrap {
+  position: relative;
+  width: 100%;
+  height: var(--er-emoji);
+  display: flex;
+  align-items: center;
+}
+
+.er-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #e74c3c, #e67e22, #f1c40f, #2ecc71, #27ae60);
+}
+
+/* Hidden range input stretches over the track area for interaction */
+.er-input {
+  position: absolute;
+  top: 0;
+  left: calc(var(--er-emoji) / 2);
+  right: calc(var(--er-emoji) / 2);
+  height: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 3;
+  margin: 0;
+}
+
+.er-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--er-emoji);
+  height: var(--er-emoji);
+  border-radius: 50%;
+  background: transparent;
+  cursor: grab;
+}
+
+.er-input::-moz-range-thumb {
+  width: var(--er-emoji);
+  height: var(--er-emoji);
+  border-radius: 50%;
+  background: transparent;
+  cursor: grab;
+  border: none;
+}
+
+/* Emoji face positioned on the track */
+.er-face {
+  position: absolute;
+  width: var(--er-emoji);
+  height: var(--er-emoji);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.er-face svg {
+  width: 100%;
+  height: 100%;
+}
+
+.er-label {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}

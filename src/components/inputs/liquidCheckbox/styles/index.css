@@ -1,0 +1,106 @@
+.lc-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lc-box {
+  position: relative;
+  width: var(--lc-size);
+  height: var(--lc-size);
+  border-radius: 25%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.lc-wrap.checked .lc-box {
+  border-color: var(--lc-color);
+}
+
+.lc-fill {
+  position: absolute;
+  bottom: 0;
+  left: -10%;
+  right: -10%;
+  height: 0%;
+  background: var(--lc-color);
+  border-radius: 50% 50% 0 0;
+  transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+              border-radius 0.45s ease;
+}
+
+.lc-wrap.checked .lc-fill {
+  height: 120%;
+  border-radius: 0;
+}
+
+.lc-wave {
+  position: absolute;
+  top: -8px;
+  left: -20%;
+  right: -20%;
+  height: 16px;
+  background: var(--lc-color);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: lc-wave 1.5s ease-in-out infinite;
+}
+
+.lc-wrap:not(.checked) .lc-wave {
+  display: none;
+}
+
+.lc-wrap.checked .lc-wave {
+  animation: lc-wave 1.5s ease-in-out infinite, lc-fade 0.5s ease 0.4s forwards;
+}
+
+@keyframes lc-wave {
+  0%, 100% { transform: translateX(-5%) rotate(-2deg); }
+  50% { transform: translateX(5%) rotate(2deg); }
+}
+
+@keyframes lc-fade {
+  to { opacity: 0; }
+}
+
+.lc-check {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.2s ease 0.2s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+}
+
+.lc-wrap.checked .lc-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.lc-check svg {
+  width: 60%;
+  height: 60%;
+}
+
+.lc-label {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.3s ease;
+}
+
+.lc-wrap.checked .lc-label {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lc-fill, .lc-check { transition-duration: 0.01ms; }
+  .lc-wave { animation: none; }
+}

@@ -1,0 +1,58 @@
+.sc-container {
+  position: relative;
+  width: var(--sc-w);
+  height: var(--sc-h);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.sc-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sc-canvas {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  border-radius: inherit;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sc-canvas.revealed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sc-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.sc-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.sc-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #34d399, #06b6d4);
+  transition: width 0.15s ease-out;
+  border-radius: 0 2px 2px 0;
+}
