@@ -1,0 +1,168 @@
+.sta-shell {
+  position: relative;
+  width: var(--sta-w);
+  height: var(--sta-h);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 4px 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+
+/* Glossy top highlight */
+.sta-shell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3) 30%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0.3) 70%,
+    transparent
+  );
+  z-index: 2;
+}
+
+/* Label */
+.sta-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: var(--sta-knob-w);
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: calc(var(--sta-h) * 0.24);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.3px;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.sta-shell.completed .sta-label {
+  padding-left: 0;
+}
+
+/* Knob */
+.sta-knob {
+  position: absolute;
+  top: var(--sta-pad);
+  left: var(--sta-pad);
+  width: var(--sta-knob-w);
+  height: calc(var(--sta-h) - var(--sta-pad) * 2);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #c6f54d 0%, #a8e020 50%, #96d414 100%);
+  box-shadow:
+    0 2px 12px rgba(166, 224, 32, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  cursor: grab;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.sta-knob:active {
+  cursor: grabbing;
+}
+
+.sta-knob.animating {
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Completed state — knob expands to fill */
+.sta-shell.completed .sta-knob {
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Icon inside knob */
+.sta-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.55);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.sta-shell.completed .sta-icon {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+/* Completed check */
+.sta-check {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.sta-shell.completed .sta-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.sta-check svg {
+  width: calc(var(--sta-h) * 0.35);
+  height: calc(var(--sta-h) * 0.35);
+}
+
+/* Shimmer hint on label */
+.sta-label::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.06),
+    transparent
+  );
+  animation: sta-shimmer 2.5s ease-in-out infinite;
+}
+
+.sta-shell.completed .sta-label::after {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes sta-shimmer {
+  0%, 100% { transform: translateX(calc(var(--sta-knob-w) * -1)); }
+  50% { transform: translateX(var(--sta-w)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sta-knob,
+  .sta-knob.animating,
+  .sta-shell.completed .sta-knob,
+  .sta-icon,
+  .sta-check {
+    transition-duration: 0.01ms;
+  }
+  .sta-label::after {
+    animation: none;
+  }
+}
