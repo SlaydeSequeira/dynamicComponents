@@ -3,6 +3,7 @@ import { usageEntries, type UsageEntry } from "./registry";
 
 export default function UsageApp() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const grouped = useMemo(() => {
     const map = new Map<string, { entry: UsageEntry; index: number }[]>();
@@ -17,8 +18,21 @@ export default function UsageApp() {
   const ActiveComponent = usageEntries[activeIndex]?.component;
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#0f0f1a", color: "#eee" }}>
+    <div className="usage-shell" style={{ display: "flex", minHeight: "100vh", background: "#0f0f1a", color: "#eee" }}>
+      <button
+        className={`sidebar-toggle${sidebarOpen ? " open" : ""}`}
+        onClick={() => setSidebarOpen((v) => !v)}
+        aria-label="Toggle sidebar"
+      >
+        {sidebarOpen ? "✕" : "☰"}
+      </button>
+
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+
       <nav
+        className={`usage-sidebar${sidebarOpen ? " open" : ""}`}
         style={{
           width: 260,
           minWidth: 260,
@@ -70,7 +84,10 @@ export default function UsageApp() {
             {items.map(({ entry, index }) => (
               <button
                 key={index}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => {
+                  setActiveIndex(index);
+                  setSidebarOpen(false);
+                }}
                 style={{
                   display: "block",
                   width: "100%",
@@ -106,7 +123,7 @@ export default function UsageApp() {
         )}
       </nav>
 
-      <main style={{ flex: 1, padding: "32px 48px", overflow: "auto" }}>
+      <main className="usage-main" style={{ flex: 1, padding: "32px 48px", overflow: "auto" }}>
         {ActiveComponent ? (
           <ActiveComponent />
         ) : (

@@ -93,6 +93,7 @@ export default function Playground({ component: Component, config }: PlaygroundP
       </div>
 
       <div
+        className="playground-preview"
         style={{
           padding: 32,
           display: "flex",
@@ -106,6 +107,7 @@ export default function Playground({ component: Component, config }: PlaygroundP
       </div>
 
       <div
+        className="playground-controls"
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr 1fr",

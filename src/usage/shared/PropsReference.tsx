@@ -54,6 +54,7 @@ export const PropsReference = ({ playgroundConfig, extraProps = [] }: PropsRefer
   return (
     <div>
       <h3>Props Reference</h3>
+      <div className="props-table-wrapper">
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
         <thead>
           <tr style={{ borderBottom: "1px solid #333" }}>
@@ -78,6 +79,7 @@ export const PropsReference = ({ playgroundConfig, extraProps = [] }: PropsRefer
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

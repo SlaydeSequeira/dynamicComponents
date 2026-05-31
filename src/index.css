@@ -37,3 +37,76 @@ code {
 a {
   color: #7cb3f5;
 }
+
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1001;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #2a2a44;
+  border-radius: 8px;
+  background: #16162a;
+  color: #eee;
+  font-size: 20px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: flex;
+  }
+
+  .sidebar-toggle.open {
+    left: 220px;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .usage-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  .usage-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .usage-main {
+    padding: 16px !important;
+    padding-top: 64px !important;
+  }
+
+  .playground-preview {
+    padding: 16px !important;
+    overflow-x: auto;
+  }
+
+  .playground-controls {
+    grid-template-columns: 1fr !important;
+  }
+
+  .props-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
