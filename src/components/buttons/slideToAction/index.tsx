@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import type { SlideToActionProps } from "./interfaces";
 import { BASE_WIDTH, BASE_HEIGHT, KNOB_PAD } from "./utils";
 import { clamp } from "../../shared/utils";
+import { CheckIcon } from "../../shared/CheckIcon";
 import "./styles/index.css";
 
 export type { SlideToActionProps } from "./interfaces";
@@ -148,15 +149,7 @@ export default function SlideToAction({
       </div>
 
       <span className="sta-check">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path
-            d="M4 12.5l5 5L20 6.5"
-            stroke="rgba(0,0,0,0.6)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <CheckIcon stroke="rgba(0,0,0,0.6)" />
       </span>
     </div>
   );

@@ -1,6 +1,7 @@
 import type { CompleteOrderButtonProps, Phase } from "./interfaces";
 import { PHASES, ORDER, TIMINGS } from "./utils";
 import { shade, speedToMult } from "../../shared/utils";
+import { CheckIcon } from "../../shared/CheckIcon";
 import { usePhaseAnimation } from "../../shared/usePhaseAnimation";
 import HdHillsSvg from "./hd/HdHillsSvg";
 import {
@@ -99,16 +100,7 @@ export default function CompleteOrderButton({
       </span>
 
       <span className={`cob-done ${phase === PHASES.DONE ? "show" : ""}`}>
-        <svg viewBox="0 0 24 24" className="cob-check" aria-hidden="true">
-          <path
-            d="M4 12.5l5 5L20 6.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <CheckIcon className="cob-check" />
         {successLabel}
       </span>
 

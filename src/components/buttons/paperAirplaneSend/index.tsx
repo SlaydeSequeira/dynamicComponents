@@ -1,6 +1,7 @@
 import type { PaperAirplaneSendProps, Phase } from "./interfaces";
 import { PHASES, ORDER, TIMINGS } from "./utils";
 import { speedToMult } from "../../shared/utils";
+import { CheckIcon } from "../../shared/CheckIcon";
 import { usePhaseAnimation } from "../../shared/usePhaseAnimation";
 import "./styles/index.css";
 
@@ -109,16 +110,7 @@ export default function PaperAirplaneSend({
       <span className={`pas-flash ${phase === PHASES.FOLD ? "show" : ""}`} />
 
       <span className={`pas-done ${phase === PHASES.DONE ? "show" : ""}`}>
-        <svg viewBox="0 0 24 24" className="pas-check" aria-hidden="true">
-          <path
-            d="M4 12.5l5 5L20 6.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <CheckIcon className="pas-check" />
         {successLabel}
       </span>
     </div>
