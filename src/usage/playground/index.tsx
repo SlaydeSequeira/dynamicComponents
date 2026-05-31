@@ -25,7 +25,8 @@ function buildInitialState(config: PropConfig[]): Record<string, unknown> {
 
 function buildProps(
   config: PropConfig[],
-  state: Record<string, unknown>
+  state: Record<string, unknown>,
+  updater: (propName: string, value: unknown) => void
 ): Record<string, unknown> {
   const props: Record<string, unknown> = {};
   for (const c of config) {
@@ -37,6 +38,9 @@ function buildProps(
       if ((v as string) !== "") props[c.propName] = v;
     } else {
       props[c.propName] = v;
+    }
+    if (typeof c.linkedOnChange === "string") {
+      props[c.linkedOnChange] = (val: unknown) => updater(c.propName, val);
     }
   }
   return props;
@@ -63,7 +67,7 @@ export default function Playground({ component: Component, config }: PlaygroundP
     []
   );
 
-  const resolvedProps = buildProps(config, state);
+  const resolvedProps = buildProps(config, state, update);
   resolvedProps.onComplete = () => addLog("onComplete fired");
 
   return (

@@ -143,12 +143,15 @@ function ToggleInput({ value, onChange }: InputRendererProps) {
 function SliderInput({ config, value, onChange }: InputRendererProps) {
   const min = config.min ?? 0;
   const max = config.max ?? 100;
+  const step = (config.step as number | undefined) ?? (max - min < 10 ? 0.1 : 1);
+  const display = Number(value).toFixed(step < 1 ? 1 : 0);
   return (
     <div>
       <input
         type="range"
         min={min}
         max={max}
+        step={step}
         value={value as number}
         onChange={(e) => onChange(Number(e.target.value))}
         style={{ width: "100%", accentColor: "#7cb3f5" }}
@@ -162,7 +165,7 @@ function SliderInput({ config, value, onChange }: InputRendererProps) {
         }}
       >
         <span>{min}</span>
-        <span>{value as number}</span>
+        <span>{display}</span>
         <span>{max}</span>
       </div>
     </div>
