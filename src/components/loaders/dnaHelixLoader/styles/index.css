@@ -1,0 +1,73 @@
+.dna-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--dna-size);
+  height: var(--dna-size);
+}
+
+.dna-pair {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+  left: 10%;
+  animation: dna-rotate var(--dna-speed) linear infinite;
+  animation-delay: var(--dna-delay);
+  transform-style: preserve-3d;
+  perspective: 200px;
+}
+
+.dna-dot {
+  width: var(--dna-dot-size);
+  height: var(--dna-dot-size);
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px var(--dna-dot-color);
+  background: var(--dna-dot-color);
+  animation: dna-pulse var(--dna-speed) ease-in-out infinite;
+  animation-delay: var(--dna-delay);
+}
+
+.dna-dot.strand-a {
+  --dna-dot-color: var(--dna-color-a);
+}
+
+.dna-dot.strand-b {
+  --dna-dot-color: var(--dna-color-b);
+}
+
+.dna-connector {
+  flex: 1;
+  height: 2px;
+  margin: 0 4px;
+  background: var(--dna-connector);
+  border-radius: 1px;
+  opacity: 0.6;
+  animation: dna-connector-fade var(--dna-speed) ease-in-out infinite;
+  animation-delay: var(--dna-delay);
+}
+
+@keyframes dna-rotate {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+@keyframes dna-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.6); opacity: 0.5; }
+}
+
+@keyframes dna-connector-fade {
+  0%, 100% { opacity: 0.8; transform: scaleX(1); }
+  25%, 75% { opacity: 0.15; transform: scaleX(0.3); }
+  50% { opacity: 0.8; transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dna-pair { animation-duration: 0.01ms; }
+  .dna-dot { animation: none; }
+  .dna-connector { animation: none; }
+}

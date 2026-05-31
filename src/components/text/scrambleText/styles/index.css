@@ -1,0 +1,31 @@
+.st-container {
+  display: inline-block;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: var(--st-fs);
+  color: var(--st-color, #fff);
+  cursor: default;
+  user-select: none;
+  letter-spacing: 0.02em;
+}
+
+.st-char {
+  display: inline-block;
+  transition: color 0.1s ease;
+  min-width: 0.6em;
+}
+
+.st-char.scrambling {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.st-char.resolved {
+  color: var(--st-color, #fff);
+}
+
+.st-char.space {
+  width: 0.3em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-char { transition-duration: 0.01ms; }
+}

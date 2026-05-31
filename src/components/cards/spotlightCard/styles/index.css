@@ -1,0 +1,100 @@
+.slc-wrap {
+  position: relative;
+  width: var(--slc-w);
+  height: var(--slc-h);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
+  overflow: hidden;
+  cursor: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.slc-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  -webkit-mask-image: radial-gradient(
+    circle var(--slc-radius) at var(--slc-mx, -999px) var(--slc-my, -999px),
+    #000 60%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle var(--slc-radius) at var(--slc-mx, -999px) var(--slc-my, -999px),
+    #000 60%,
+    transparent 100%
+  );
+  transition: mask-image 0s, -webkit-mask-image 0s;
+}
+
+.slc-revealed .slc-content {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.slc-dim {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.08);
+  position: absolute;
+  inset: 0;
+}
+
+.slc-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: radial-gradient(
+    circle var(--slc-radius) at var(--slc-mx, -999px) var(--slc-my, -999px),
+    var(--slc-color) 0%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.slc-wrap:hover .slc-glow {
+  opacity: 1;
+}
+
+.slc-border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 4;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.slc-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: opacity 0.3s ease;
+}
+
+.slc-wrap:hover .slc-hint {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slc-content { transition-duration: 0.01ms; }
+}

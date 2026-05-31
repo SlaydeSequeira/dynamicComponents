@@ -1,0 +1,123 @@
+.hc-wrap {
+  perspective: 800px;
+  width: var(--hc-w);
+  height: var(--hc-h);
+}
+
+.hc-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.hc-card:hover {
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+.hc-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hc-holo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  mix-blend-mode: color-dodge;
+  background:
+    repeating-linear-gradient(
+      var(--hc-angle, 135deg),
+      transparent 0%,
+      rgba(255, 0, 0, 0.12) 5%,
+      rgba(255, 165, 0, 0.12) 10%,
+      rgba(255, 255, 0, 0.12) 15%,
+      rgba(0, 255, 0, 0.12) 20%,
+      rgba(0, 127, 255, 0.12) 25%,
+      rgba(139, 0, 255, 0.12) 30%,
+      transparent 35%
+    );
+  filter: blur(1px);
+}
+
+.hc-card:hover .hc-holo {
+  opacity: var(--hc-intensity, 0.5);
+}
+
+.hc-shimmer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    circle at var(--hc-mx, 50%) var(--hc-my, 50%),
+    rgba(255, 255, 255, 0.25) 0%,
+    transparent 60%
+  );
+}
+
+.hc-card:hover .hc-shimmer {
+  opacity: 1;
+}
+
+.hc-sparkle {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 40% 70%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 60% 20%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 80% 60%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 15% 80%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 70% 45%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 50% 90%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 90% 15%, rgba(255, 255, 255, 0.5), transparent);
+  animation: hc-twinkle 3s ease-in-out infinite alternate;
+}
+
+.hc-card:hover .hc-sparkle {
+  opacity: 0.8;
+}
+
+@keyframes hc-twinkle {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.4); }
+  100% { filter: brightness(0.8); }
+}
+
+.hc-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-card { transition-duration: 0.01ms; }
+  .hc-sparkle { animation: none; }
+}
