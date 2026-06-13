@@ -1,0 +1,225 @@
+.dock-root {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  /* Headroom so magnified tiles and labels are never clipped from above. */
+  padding-top: calc(var(--dock-max) - var(--dock-base) + 44px);
+}
+
+.dock-glass-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.dock-panel {
+  --dock-pad-y: 10px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--dock-gap);
+  /* Content area must equal one resting tile; border-box means we add the
+     vertical padding back on so base icons sit inside the bar with breathing
+     room, while magnified tiles overflow upward (align-items: flex-end). */
+  height: calc(var(--dock-base) + var(--dock-pad-y) * 2);
+  padding: var(--dock-pad-y) 12px;
+  border-radius: 24px;
+  background: rgba(28, 28, 48, 0.55);
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 14px 44px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  /* Tiles grow upward past the bar's height; keep them visible. */
+  overflow: visible;
+}
+
+.dock-item {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--dock-size, var(--dock-base));
+  height: var(--dock-size, var(--dock-base));
+  padding: 0;
+  border: none;
+  border-radius: 24%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.04)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 4px 12px rgba(0, 0, 0, 0.28);
+  will-change: width, height;
+  z-index: 1;
+}
+
+/* Raise the hovered tile so its label clears later siblings. */
+.dock-item:hover {
+  z-index: 2;
+}
+
+.dock-item:focus-visible {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 0 0 3px var(--dock-accent);
+}
+
+.dock-icon {
+  font-size: calc(var(--dock-size, var(--dock-base)) * 0.52);
+  line-height: 1;
+  display: block;
+  user-select: none;
+}
+
+/* --- Label tooltip --- */
+
+.dock-label {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(18, 18, 32, 0.96);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.dock-label::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(18, 18, 32, 0.96);
+}
+
+.dock-item:hover .dock-label,
+.dock-item:focus-visible .dock-label {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* --- Active indicator dot --- */
+
+.dock-dot {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--dock-accent);
+  transform: translateX(-50%) scale(0);
+  transition: transform 0.2s ease;
+}
+
+.dock-item.active .dock-dot {
+  transform: translateX(-50%) scale(1);
+}
+
+/* --- Click bounce --- */
+
+.dock-item.bouncing {
+  animation: dock-bounce 0.6s cubic-bezier(0.28, 0.84, 0.42, 1);
+}
+
+@keyframes dock-bounce {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-28%); }
+  55% { transform: translateY(0); }
+  72% { transform: translateY(-10%); }
+  100% { transform: translateY(0); }
+}
+
+/* --- Liquid glass material --- */
+
+.dock-panel.liquid {
+  isolation: isolate;
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 16px 50px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 -12px 26px rgba(255, 255, 255, 0.05);
+}
+
+.dock-refract,
+.dock-shine,
+.dock-edge {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Refraction: an SVG turbulence/displacement filter bends the backdrop,
+   strongest near the rounded edges — the signature liquid-glass look. */
+.dock-refract {
+  overflow: hidden;
+  backdrop-filter: var(--dock-filter);
+  -webkit-backdrop-filter: var(--dock-filter);
+}
+
+/* Specular: a soft top gloss plus a glare that tracks the cursor (--dock-glare-x). */
+.dock-shine {
+  overflow: hidden;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(
+      150px 90px at var(--dock-glare-x, 50%) -12%,
+      rgba(255, 255, 255, 0.5),
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.34) 0%,
+      rgba(255, 255, 255, 0.06) 26%,
+      transparent 52%
+    );
+}
+
+/* Bright refractive rim around the whole bar. */
+.dock-edge {
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.18);
+}
+
+/* Solid fallback where backdrop-filter is unsupported. */
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .dock-panel {
+    background: rgba(28, 28, 48, 0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-item,
+  .dock-label,
+  .dock-dot {
+    transition-duration: 0.01ms;
+  }
+  .dock-item.bouncing {
+    animation: none;
+  }
+}
